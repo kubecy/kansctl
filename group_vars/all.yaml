@@ -1,0 +1,14 @@
+## 
+docker_repo:
+  host: "registry.cn-guangzhou.aliyuncs.com"
+  image_project: "kansctl"
+  image_version: "6.2.18"
+
+
+storage:
+  redis_data: "/data"
+
+
+
+#service:
+#  redis-single: "{{ docker_repo.host }}/{{ image_project }}/vendor-redis:6.2.5"
