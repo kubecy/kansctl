@@ -10,5 +10,5 @@ storage:
 
 
 
-#service:
-#  redis-single: "{{ docker_repo.host }}/{{ image_project }}/vendor-redis:6.2.5"
+service:
+  redis_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/{{docker_repo.image_version}}"
