@@ -1,0 +1,16 @@
+#- name: apply redis-single
+#  gather_facts: false
+#  hosts: "{{ deploy_host }}"
+#  #vars_files: "moone/{{ deploy_host }}.yaml"
+#  tasks:
+#    - name: "加载变量"
+#      include_vars: "../moone/{{ deploy_host }}.yaml"
+#  roles:
+#    - { role: redis-single, tags: redis-single, when: service.redis_single is defined }
+
+
+- hosts: "{{ deploy_host }}"
+  #vars_files: "moone/{{ deploy_host }}.yml"
+  
+  roles:
+    - test

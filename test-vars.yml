@@ -1,0 +1,11 @@
+- name: "apply redis"
+  gather_facts: false
+  hosts: "{{ deploy_host }}"
+#  vars_files: "moone/{{ deploy_host }}.yml"
+  tasks:
+    - name: "变量测试"
+      debug:
+        msg: "{{ storage.redis_data }}"
+    - name: "redis"
+      debug:
+        msg: "{{ service.redis_single }}"

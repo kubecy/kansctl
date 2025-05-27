@@ -1,6 +1,0 @@
-#- name: apply redis-single
-#  gather_facts: false
-#  hosts:
-#    - "{{ deploy_host }}"
-#  roles:
-#    - { role: redis-single, tags: redis-single, when: service.redis is redis-single }

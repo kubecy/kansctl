@@ -1,0 +1,17 @@
+## 
+
+deploy_host: "moone_dev"
+
+docker_repo:
+  host: "registry.cn-guangzhou.aliyuncs.com"
+  image_project: "kansctl"
+  image_version: "6.2.18"
+
+
+storage:
+  redis_data: "/data"
+
+
+
+service:
+  redis_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/{{docker_repo.image_version}}"

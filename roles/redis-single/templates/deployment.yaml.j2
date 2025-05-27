@@ -1,0 +1,97 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: {{ namespace|default('bigquant') }}
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: redis
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  namespace: {{ namespace|default('bigquant') }}
+data:
+  redis-config: |-
+    save ""
+    dir /data
+    port 6379
+    bind 0.0.0.0
+    appendonly yes
+    maxmemory-policy volatile-lru
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: redis
+  namespace: {{ namespace|default('bigquant') }}
+  labels:
+    app.aipaas.io/name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+      access_type: protected
+      role: system
+      app.aipaas.io/name: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+        access_type: protected
+        role: system
+        app.aipaas.io/name: redis
+    spec:
+      {% if enable_service_links is defined -%}enableServiceLinks: {{ enable_service_links }}{%- endif %}
+
+      {% if nodeSelector.enable|d(True) -%}
+      nodeSelector:
+        redis: "true"
+      {%- endif %}
+
+      containers:
+        - name: redis
+          image: {{ service.redis}}
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/usr/local/bin/redis-server"
+          args:
+            - /etc/redis/redis.conf
+          ports:
+            - containerPort: 6379
+              name: redis
+          volumeMounts:
+            - name: redis-storage
+              readOnly: false
+              mountPath: "/data"
+            - mountPath: "/etc/redis"
+              name: config
+          resources:
+            limits:
+              memory: 4Gi
+              cpu: '200m'
+            requests:
+              memory: 1Gi
+              cpu: 10m
+      volumes:
+        - name: redis-storage
+          hostPath:
+            path: "{{ storage.local_data }}/redis_data"
+            type: DirectoryOrCreate
+        - name: config
+          configMap:
+            name: redis-config
+            items:
+            - key: redis-config
+              path: redis.conf
+        - name: mastersys
+          hostPath:
+            path: /sys
+      securityContext:
+        privileged: true
+
