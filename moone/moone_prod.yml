@@ -1,6 +1,6 @@
 ## 
 
-deploy_host: "moone_prod"
+k8s_host: "moone_prod"
 
 docker_repo:
   host: "registry.cn-guangzhou.aliyuncs.com"
@@ -19,4 +19,8 @@ storage:
 
 
 service:
-  redis_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/{{docker_repo.image_name}}:{{docker_repo.image_version}}"
+  redis_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/redis:6.2.18"
+  postgresql_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/postgresql:14.18-alpine3.21"
+
+
+

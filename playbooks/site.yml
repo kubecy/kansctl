@@ -1,12 +1,11 @@
 - name: apply redis-single
   gather_facts: false
-  hosts: "{{ deploy_host }}"
+  hosts: "{{ k8s_host }}"
   roles:
     - { role: redis-single, tags: redis-single, when: service.redis_single is defined }
 
-
-#- hosts: "{{ deploy_host }}"
-#  #vars_files: "moone/{{ deploy_host }}.yml"
-#  
-#  roles:
-#    - test
+- name: apply postgresql-single
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: postgresql-single, tags: postgresql-single, when: service.postgresql_single is defined }
