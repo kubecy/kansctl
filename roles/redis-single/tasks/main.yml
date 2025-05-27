@@ -1,16 +1,20 @@
 ---
-# tasks file for redis-single
-
 - name: Creates yaml/redis directory
   file:
-    path: yaml/redis
+    path: /etc/kansctl/yaml/redis-single
     state: directory
 
 - name: Copying over Redis files for services
   template:
     src: "{{ item }}.j2"
-    dest: "yaml/redis/{{ item }}"
+    dest: "/etc/kansctl/yaml/redis-single/{{ item }}"
     mode: "0660"
-  with_items:
-    - "deployment.yaml"
+  loop:
+    - 01-pv-redis.yml
+    - 02-pvc-redis.yml
+    - 03-cm-redis.yml
+    - 04-sts-redis.yml
+    - 05-svc-redis.yml
 
+- name: Deploy single node Redis
+  shell: kubectl apply -f /etc/kansctl/yaml/redis-single 

@@ -5,13 +5,18 @@ deploy_host: "moone_prod"
 docker_repo:
   host: "registry.cn-guangzhou.aliyuncs.com"
   image_project: "kansctl"
+  image_name: "redis"
   image_version: "6.2.18"
 
 
+namespace: "moone"
+
+
 storage:
-  redis_data: "/data"
+  pvc_redis_data: "redis-single-data-pvc"
+  path: 
 
 
 
 service:
-  redis_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/{{docker_repo.image_version}}"
+  redis_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/{{docker_repo.image_name}}:{{docker_repo.image_version}}"
