@@ -1,10 +1,10 @@
 ---
-- name: Creates yaml/postgresql directory
+- name: 在目录主机创建yaml目录 
   file:
     path: /etc/kansctl/yaml/postgresql-single
     state: directory
 
-- name: Copying over Redis files for services
+- name: 渲染postgresql-single YAML 模板
   template:
     src: "{{ item }}.j2"
     dest: "/etc/kansctl/yaml/postgresql-single/{{ item }}"
@@ -16,6 +16,6 @@
     - 04-sts-postgresql.yml
     - 05-svc-postgresql.yml
 
-- name: Deploy single node postgresql
+- name: 部署postgresql-single实例
   shell: kubectl apply -f /etc/kansctl/yaml/postgresql-single 
 
