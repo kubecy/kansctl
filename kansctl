@@ -61,9 +61,9 @@ kansctl service:
     rabbitmq-single                rabbitmq        单实例
 
 kansctl examples:
-    kansctl apply -e moone_prod -t redis-single
-    kansctl scale -e moone_prod -t redis-single --replicas=2
-    kansctl update -e moone_prod -t redis-single --image=redis:6.14.8
+    ./kansctl apply -e moone_prod -t redis-single
+    ./kansctl scale -e moone_prod -t redis-single --replicas=2
+    ./kansctl update -e moone_prod -t redis-single --image=redis:6.14.8
     
 EOF
 }
