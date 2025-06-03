@@ -41,8 +41,8 @@ function usage() {
     cat <<EOF
 -------------------------------------------------------------------------------------
 kansctl command:
-    apply         <service>        应用集群资源配置（执行部署）
-    delete        <service>        删除集群资源配置（执行卸载）
+    apply         <service>        应用集群资源配置 (执行部署)
+    delete        <service>        删除集群资源配置 (执行卸载)
     update        <service>        滚动更新指定服务
     rollback      <service>        回滚上一个服务版本
     history       <service>        查看服务版本发布历史
@@ -55,18 +55,48 @@ kansctl env:
     moone_test                     moone 测试环境
 
 kansctl service:
-    redis-single                   redis           单实例
-    postgresql-single              postgresql      单实例
-    mysql-single                   mysql           单实例
-    rabbitmq-single                rabbitmq        单实例
+    redis-single                   redis      单实例
+    postgresql-single              postgresql 单实例
+    mysql-single                   mysql      单实例
+    rabbitmq-single                rabbitmq   单实例
 
-kansctl examples:
+EOF
+}
+
+function setup() {
+      cat <<EOF
+available args:
+    -e    指定部署服务名, 对应角色名称 
+    -t    指定环境变量名称, 会加载配置文件 <env>.yml 作为环境变量输入
+
+examples:
     ./kansctl apply -e moone_prod -t redis-single
     ./kansctl scale -e moone_prod -t redis-single --replicas=2
     ./kansctl update -e moone_prod -t redis-single --image=redis:6.14.8
-    
+
 EOF
 }
+
+function deploy_env() {
+    
+
+}
+
+
+function deploy_service() {
+
+
+
+}
+
+function apply() {
+    
+
+}
+
+
+
+
 
 
 function main() {
