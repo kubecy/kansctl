@@ -11,7 +11,7 @@
 ######################################################################
 set -o nounset
 set -o errexit
-
+##
 ## 全局变量定义
 SERVICE_DIR="./roles"
 ENV_DIR="./moone"
