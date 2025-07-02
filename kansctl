@@ -94,8 +94,8 @@ function apply() {
     ansible-playbook -e @${ENV_FILE} -t ${SERVICE_NAME} ${PLAYBOOK_FILE}
 
 }
-#
-#
+
+
 #function delete() {
 #
 #
