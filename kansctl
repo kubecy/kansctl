@@ -4,13 +4,18 @@
 #                                                                    #
 # AUTHOR:          kubecy                                            #
 # SCRIPT ID:       kansctl                                           #
-# FUNCTION:        install mysql8 and mysql5.7 on Debian and RedHat  #
+# FUNCTION:        快速落地 PoC 项目部署                             #
 # CREATE TIME:     2024/11/30                                        #
 # PLATFORM:        Linux                                             #
 #                                                                    #
 ######################################################################
 set -o nounset
 set -o errexit
+
+## 全局变量定义
+SERVICE_DIR="./roles"
+ENV_DIR="./moone"
+PLAYBOOK_FILE="./playbooks/site.yml"
 
 
 function logger() {
@@ -40,84 +45,87 @@ function usage() {
     echo -e "\033[33mUsage:\033[0m kansctl command -e <env> -t <service> [args]"
     cat <<EOF
 -------------------------------------------------------------------------------------
-kansctl command:
-    apply         <service>        应用集群资源配置 (执行部署)
-    delete        <service>        删除集群资源配置 (执行卸载)
-    update        <service>        滚动更新指定服务
-    rollback      <service>        回滚上一个服务版本
-    history       <service>        查看服务版本发布历史
-    scale         <service>        修改服务副本数量
-    monitor       <service>        监控服务运行状态
 
-kansctl env:
-    moone_prod                     moone 生产环境
-    moone_dev                      moone 开发环境
-    moone_test                     moone 测试环境
+命令 (command):
+  list                               列出当前支持的所有服务（基于 roles 目录）
+  apply                              部署指定服务（执行 Ansible 安装）
+  delete                             卸载指定服务（执行 Ansible 清理）
 
-kansctl service:
-    redis-single                   redis      单实例
-    postgresql-single              postgresql 单实例
-    mysql-single                   mysql      单实例
-    rabbitmq-single                rabbitmq   单实例
+选项参数 (options):
+  -e <环境>                          指定部署环境，会加载对应的 <环境>.yml 配置文件
+  -t <服务>                          指定部署服务，对应 roles 目录下的服务名
 
-EOF
-}
+环境 (env):
+  moone_prod                         moone 生产环境
+  moone_dev                          moone 开发环境
+  moone_test                         moone 测试环境
 
-function setup() {
-      cat <<EOF
-available args:
-    -e    指定部署服务名, 对应角色名称 
-    -t    指定环境变量名称, 会加载配置文件 <env>.yml 作为环境变量输入
+服务 (service):
+  redis-single                       Redis      单实例
+  postgresql-single                  PostgreSQL 单实例
+  mysql-single                       MySQL      单实例
+  rabbitmq-single                    RabbitMQ   单实例
 
-examples:
-    ./kansctl apply -e moone_prod -t redis-single
-    ./kansctl scale -e moone_prod -t redis-single --replicas=2
-    ./kansctl update -e moone_prod -t redis-single --image=redis:6.14.8
+示例 (examples):
+  ./kansctl list
+  ./kansctl apply  -e moone_prod -t redis-single
+  ./kansctl delete -e moone_test -t mysql-single
+
+提示 (tip):
+  请确保 roles 目录和对应的 <环境>.yml 配置文件已存在，否则部署将失败。
 
 EOF
 }
 
-function deploy_env() {
+function list() {
+    logger info "服务名称:"
+    find "$SERVICE_DIR" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | while read SERVICE; do
+      echo "-  $SERVICE"
+    done
     
-
-}
-
-
-function deploy_service() {
-
-
-
 }
 
 function apply() {
+    local ENV_NAME="$2"
+    local SERVICE_NAME="$4"
+    ENV_FILE="${ENV_DIR}/${ENV_NAME}.yml"
     
+    logger debug "执行命令: ansible-playbook -e @${ENV_FILE} -t ${SERVICE_NAME} ${PLAYBOOK_FILE}"
+    ansible-playbook -e @${ENV_FILE} -t ${SERVICE_NAME} ${PLAYBOOK_FILE}
 
 }
-
-
+#
+#
+#function delete() {
+#
+#
+#
+#}
 
 
 
 
 function main() {
+    [[ "$#" -gt 0 ]] || usage 
+    case "$1" in
+        (list)
+            [[ "$#" -eq 1 ]] || { usage >&2; exit 2; }
+            list
+            ;; 
+            
+        (apply)
+            [[ "$#" -gt 2 ]] || { usage >&2; exit 2; }
+            apply "${@:2}"
+            ;;
+        #(delete)
+        #    echo "[TODO] delete 功能待实现" #delete
+        #    ;;
+        (*)
+            usage
+            exit 0
+            ;;
+    esac
+}
 
-  [ "$#" -gt 0 ] || { usage >&2; exit 2; }
-
-  case "$1" in
-      (kca-renew)
-          [ "$#" -eq 2 ] || { usage >&2; exit 2; }
-          renew-ca "$2"
-          ;;
-      (help)
-          [ "$#" -gt 1 ] || { usage >&2; exit 2; }
-          help-info "$2"
-          exit 0
-          ;;
-      (*)
-          usage
-          exit 0
-          ;;
-  esac
- }
 
 main "$@"

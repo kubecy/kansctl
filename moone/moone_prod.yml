@@ -22,5 +22,3 @@ service:
   redis_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/redis:6.2.18"
   postgresql_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/postgresql:14.18-alpine3.21"
 
-
-
