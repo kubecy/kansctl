@@ -1,0 +1,24 @@
+## 
+
+k8s_host: "moone_prod"
+
+docker_repo:
+  host: "registry.cn-guangzhou.aliyuncs.com"
+  image_project: "kansctl"
+  image_name: "redis"
+  image_version: "6.2.18"
+
+
+namespace: "moone"
+
+
+storage:
+  pvc_redis_data: "redis-single-data-pvc"
+  path: 
+
+
+
+service:
+  redis_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/redis:6.2.18"
+  postgresql_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/postgresql:14.18-alpine3.21"
+
