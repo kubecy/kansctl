@@ -1,0 +1,23 @@
+---
+- name: 在目录主机创建yaml目录
+  file:
+    path: /etc/kansctl/yaml/prometheus
+    state: directory
+
+- name: 渲染prometheus YAML 模板
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/kansctl/yaml/prometheus/{{ item }}"
+    mode: "0660"
+  loop:
+    - 01-pv-prometheus.yml
+    - 02-pvc-prometheus.yml
+    - 03-rbac-monitoring.yml
+    - 04-config-prometheus.yml
+    - 05-rule-prometheus.yml
+    - 06-deploy-prometheus.yml
+    - 07-svc-prometheus.yml
+    - 08-ingress-prometheus.yml
+
+- name: 部署prometheus实例
+  shell: kubectl apply -f /etc/kansctl/yaml/prometheus
