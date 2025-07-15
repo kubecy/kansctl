@@ -30,15 +30,15 @@
   roles:
     - { role: node-exporter, tags: node-exporter, when: service.node_exporter is defined }
 
-- name: apply prometheus-config-reloader 
-  gather_facts: false
-  hosts: "{{ k8s_host }}"
-  roles:
-    - { role: prometheus-config-reloader, tags: prometheus-config-reloader, when: service.prometheus_config_reloader is defined }
-
-- name: apply prometheus-webhook-dingtalk
-  gather_facts: false
-  hosts: "{{ k8s_host }}"
-  roles:
-    - { role: prometheus-webhook-dingtalk, tags: prometheus-webhook-dingtalk, when: service.prometheus_webhook_dingtalk is defined }
-
+#- name: apply prometheus-config-reloader 
+#  gather_facts: false
+#  hosts: "{{ k8s_host }}"
+#  roles:
+#    - { role: prometheus-config-reloader, tags: prometheus-config-reloader, when: service.prometheus_config_reloader is defined }
+#
+#- name: apply prometheus-webhook-dingtalk
+#  gather_facts: false
+#  hosts: "{{ k8s_host }}"
+#  roles:
+#    - { role: prometheus-webhook-dingtalk, tags: prometheus-webhook-dingtalk, when: service.prometheus_webhook_dingtalk is defined }
+#

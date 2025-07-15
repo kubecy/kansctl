@@ -1,0 +1,4 @@
+---
+- name: 删除 prometheus 实例
+  shell: kubectl delete -f /etc/kansctl/yaml/prometheus
+  ignore_errors: yes
