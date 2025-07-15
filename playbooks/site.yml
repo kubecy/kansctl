@@ -9,3 +9,36 @@
   hosts: "{{ k8s_host }}"
   roles:
     - { role: postgresql-single, tags: postgresql-single, when: service.postgresql_single is defined }
+
+
+## 监控告警
+- name: apply prometheus
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: prometheus, tags: prometheus, when: service.prometheus is defined }
+
+- name: apply alertmanager
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: alertmanager, tags: alertmanager, when: service.alertmanager is defined }
+
+- name: apply node-exporter
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: node-exporter, tags: node-exporter, when: service.node_exporter is defined }
+
+- name: apply prometheus-config-reloader 
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: prometheus-config-reloader, tags: prometheus-config-reloader, when: service.prometheus_config_reloader is defined }
+
+- name: apply prometheus-webhook-dingtalk
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: prometheus-webhook-dingtalk, tags: prometheus-webhook-dingtalk, when: service.prometheus_webhook_dingtalk is defined }
+
