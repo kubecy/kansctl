@@ -112,6 +112,15 @@ function delete() {
     local SERVICE_NAME="$4"
     ENV_FILE="${ENV_DIR}/${ENV_NAME}.yml"
 
+
+    logger warn "即将执行服务卸载操作，请确认!"
+    logger debug "将在 5 秒后开始删除 [$ENV_NAME] 环境中的 [$SERVICE_NAME] 服务:"
+
+    for i in {10..1}; do
+      echo -ne "\r剩余时间：\033[33m${i}\033[0m 秒，请按 Ctrl+C 取消..."
+      sleep 1
+    done
+
     if [[ "$SERVICE_NAME" == "all" ]]; then
         logger info "检测到服务参数为 all，开始批量卸载全部服务"
         for service in $(find "$SERVICE_DIR" -mindepth 1 -maxdepth 1 -type d -printf "%f\n"); do
@@ -149,6 +158,5 @@ function main() {
             ;;
     esac
 }
-
 
 main "$@"
