@@ -1,25 +1,8 @@
 ---
-- name: 在目录主机创建yaml目录
-  file:
-    path: /etc/kansctl/yaml/alertmanager
-    state: directory
+- name: 安装 alertmanager 服务
+  include_tasks: install.yml
+  when: state | default('present') == 'present'
 
-- name: 渲染alertmanager YAML 模板
-  template:
-    src: "{{ item }}.j2"
-    dest: "/etc/kansctl/yaml/alertmanager/{{ item }}"
-    mode: "0660"
-  loop:
-    - 01-config-alertmanager.yml
-    #- 02-tmpl-alertmanager.yml
-    - 03-sts-alertmanager.yml
-    - 04-svc-alertmanager.yml
-    - 05-ingress-alertmanager.yml
-
-- name: 下发 alertmanager 告警模板
-  copy:
-    src: 02-tmpl-alertmanager.yml
-    dest: /etc/kansctl/yaml/alertmanager/02-tmpl-alertmanager.yml
-
-- name: 部署alertmanager实例
-  shell: kubectl apply -f /etc/kansctl/yaml/alertmanager
+- name: 卸载 alertmanager 服务
+  include_tasks: delete.yml
+  when: state | default('present') == 'absent'
