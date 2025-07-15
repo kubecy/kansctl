@@ -1,20 +1,9 @@
 ---
-- name: 在目录主机创建yaml目录
-  file:
-    path: /etc/kansctl/yaml/redis-single
-    state: directory
+- name: 安装 redis-single 服务
+  include_tasks: install.yml
+  when: state | default('present') == 'present'
 
-- name: 渲染redis-single YAML 模板
-  template:
-    src: "{{ item }}.j2"
-    dest: "/etc/kansctl/yaml/redis-single/{{ item }}"
-    mode: "0660"
-  loop:
-    - 01-pv-redis.yml
-    - 02-pvc-redis.yml
-    - 03-cm-redis.yml
-    - 04-sts-redis.yml
-    - 05-svc-redis.yml
+- name: 卸载 redis-single 服务
+  include_tasks: delete.yml
+  when: state | default('present') == 'absent'
 
-- name: 部署redis-single实例
-  shell: kubectl apply -f /etc/kansctl/yaml/redis-single 

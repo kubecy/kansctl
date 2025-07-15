@@ -1,14 +1,14 @@
 #!/bin/bash
 
-######################################################################
-#                                                                    #
-# AUTHOR:          kubecy                                            #
-# SCRIPT ID:       kansctl                                           #
-# FUNCTION:        快速落地 PoC 项目部署                             #
-# CREATE TIME:     2024/11/30                                        #
-# PLATFORM:        Linux                                             #
-#                                                                    #
-######################################################################
+#############################################################################################################
+#                                                                                                           #
+# AUTHOR:          kubecy                                                                                   #
+# SCRIPT ID:       kansctl                                                                                  #
+# FUNCTION:        kansctl 是一款基于 Ansible、Shell 面向 Kubernetes 场景的中间件部署与项目交付自动化工具   #
+# CREATE TIME:     2023/11/30                                                                               #
+# PLATFORM:        Linux                                                                                    #
+#                                                                                                           #
+#############################################################################################################
 set -o nounset
 set -o errexit
 
@@ -71,6 +71,7 @@ function usage() {
   ./kansctl list
   ./kansctl apply  -e moone_prod -t redis-single
   ./kansctl delete -e moone_test -t mysql-single
+  ./kansctl delete -e moone_test -t all
 
 提示 (tip):
   请确保 roles 目录和对应的 <环境>.yml 配置文件已存在，否则部署将失败。
@@ -90,20 +91,40 @@ function apply() {
     local ENV_NAME="$2"
     local SERVICE_NAME="$4"
     ENV_FILE="${ENV_DIR}/${ENV_NAME}.yml"
-    
-    logger debug "执行命令: ansible-playbook -e @${ENV_FILE} -t ${SERVICE_NAME} ${PLAYBOOK_FILE}"
-    ansible-playbook -e @${ENV_FILE} -t ${SERVICE_NAME} ${PLAYBOOK_FILE}
 
+    if [[ "$SERVICE_NAME" == "all" ]]; then
+        logger info "检测到服务参数为 all，开始批量部署全部服务"
+        for service in $(find "$SERVICE_DIR" -mindepth 1 -maxdepth 1 -type d -printf "%f\n"); do
+            logger info "开始部署服务：$service"
+            logger debug "执行命令: ansible-playbook -e @${ENV_FILE} -t ${service} ${PLAYBOOK_FILE}"
+            ansible-playbook -e "@${ENV_FILE}" -t "${service}" "${PLAYBOOK_FILE}"
+        done
+    else
+        logger info "开始部署服务：$SERVICE_NAME"
+        logger debug "执行命令: ansible-playbook -e @${ENV_FILE} -t ${SERVICE_NAME} ${PLAYBOOK_FILE}"
+        ansible-playbook -e "@${ENV_FILE}" -t "${SERVICE_NAME}" "${PLAYBOOK_FILE}"
+    fi
 }
 
 
-#function delete() {
-#
-#
-#
-#}
+function delete() {
+    local ENV_NAME="$2"
+    local SERVICE_NAME="$4"
+    ENV_FILE="${ENV_DIR}/${ENV_NAME}.yml"
 
-
+    if [[ "$SERVICE_NAME" == "all" ]]; then
+        logger info "检测到服务参数为 all，开始批量卸载全部服务"
+        for service in $(find "$SERVICE_DIR" -mindepth 1 -maxdepth 1 -type d -printf "%f\n"); do
+            logger info "开始卸载服务：$service"
+            logger debug "执行命令: ansible-playbook -e @${ENV_FILE} -t ${service} ${PLAYBOOK_FILE} --extra-vars='state=absent'"
+            ansible-playbook -e "@${ENV_FILE}" -t "${service}" "${PLAYBOOK_FILE}" --extra-vars="state=absent"
+        done
+    else
+        logger info "开始卸载服务：$SERVICE_NAME"
+        logger debug "执行命令: ansible-playbook -e @${ENV_FILE} -t ${SERVICE_NAME} ${PLAYBOOK_FILE} --extra-vars='state=absent'"
+        ansible-playbook -e "@${ENV_FILE}" -t "${SERVICE_NAME}" "${PLAYBOOK_FILE}" --extra-vars="state=absent"
+    fi
+}
 
 
 function main() {
@@ -118,9 +139,10 @@ function main() {
             [[ "$#" -gt 2 ]] || { usage >&2; exit 2; }
             apply "${@:2}"
             ;;
-        #(delete)
-        #    echo "[TODO] delete 功能待实现" #delete
-        #    ;;
+        (delete)
+            [[ "$#" -gt 2 ]] || { usage >&2; exit 2; }
+            delete "${@:2}"
+            ;;
         (*)
             usage
             exit 0
