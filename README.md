@@ -1,5 +1,5 @@
 <!-- Logo -->
-<img src="https://github.com/kubecy/kansctl/blob/main/pics/kansctl-logo.svg?raw=true" width="220px" alt="kansctl logo"/>
+<img src="https://github.com/kubecy/kansctl/blob/main/pics/kansctl-logo.png?raw=true" width="220px" alt="kansctl logo"/>
 
 <!-- Badges -->
 <a href="#"><img src="https://img.shields.io/badge/Platform-Kubernetes-informational?logo=kubernetes&logoColor=white&color=326ce5" /></a>
