@@ -71,7 +71,7 @@ function usage() {
   ./kansctl list
   ./kansctl apply  -e moone_prod -t redis-single
   ./kansctl delete -e moone_test -t mysql-single
-  ./kansctl delete -e moone_test -t all
+  ./kansctl delete -e moone_prod -t all
 
 提示 (tip):
   请确保 roles 目录和对应的 <环境>.yml 配置文件已存在，否则部署将失败。
