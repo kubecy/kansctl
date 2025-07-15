@@ -1,0 +1,4 @@
+---
+- name: 删除 node-exporter 实例
+  shell: kubectl delete -f /etc/kansctl/yaml/node-exporter
+  ignore_errors: yes

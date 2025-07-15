@@ -1,0 +1,17 @@
+---
+- name: 在目录主机创建 /etc/kansctl/yaml/node-exporter 目录
+  file:
+    path: /etc/kansctl/yaml/node-exporter
+    state: directory
+
+- name: 渲染node-exporter YAML 模板
+  template:
+    src: "{{ item }}"
+    dest: "/etc/kansctl/yaml/node-exporter/{{ item | basename | regex_replace('.j2$', '') }}"
+    mode: "0660"
+  loop:
+    - 01-ds-node_export.yml.j2
+    - 02-svc-node_export.yml.j2
+
+- name: 部署node-exporter实例
+  shell: kubectl apply -f /etc/kansctl/yaml/node-exporter
