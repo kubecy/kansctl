@@ -29,5 +29,30 @@ root@kubecy-worker26 /root/.kubecy:~ # git clone https://github.com/kubecy/kansc
 root@kubecy-worker26 /root/.kubecy:~ # cd kansctl/
 ```
 
-# 快速使用
+# 使用
+### 部署单个服务
+```
+root@kubecy-master21 /root/.yichen/kansctl:~ # ./kansctl apply -e moone_prod -t  prometheus
+```
+
+### 部署多个服务
+```
+root@kubecy-master21 /root/.yichen/kansctl:~ # ./kansctl apply -e moone_prod -t  redis-single,postgresql-single
+```
+
+### 部署全部服务
+
+```
+root@kubecy-master21 /root/.yichen/kansctl:~ # ./kansctl list
+2025-07-16 01:59:55 [kansctl:83] INFO 服务名称:
+-  postgresql-single
+-  redis-single
+-  prometheus
+-  alertmanager
+-  node-exporter
+
+root@kubecy-master21 /root/.yichen/kansctl:~ # ./kansctl apply -e moone_prod -t  all
+```
+<img width="2100" height="447" alt="image" src="https://github.com/user-attachments/assets/d98905f1-3b9e-4ccd-ac06-7877180c5efd" />
+
 
