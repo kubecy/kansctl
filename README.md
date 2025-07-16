@@ -22,28 +22,17 @@
 
 # 安装
 ```
-root@kubecy-worker26 /root:~ # dnf -y install git ansible
-root@kubecy-worker26 /root:~ # mkdir .kubecy
-root@kubecy-worker26 /root:~ # cd .kubecy/
-root@kubecy-worker26 /root/.kubecy:~ # git clone https://github.com/kubecy/kansctl.git
-root@kubecy-worker26 /root/.kubecy:~ # cd kansctl/
+root@kubecy-master21 /root:~ # dnf -y install git ansible
+root@kubecy-master21 /root:~ # mkdir .kubecy
+root@kubecy-master21 /root:~ # cd .kubecy/
+root@kubecy-master21 /root/.kubecy:~ # git clone https://github.com/kubecy/kansctl.git
+root@kubecy-master21 /root/.kubecy:~ # cd kansctl/
 ```
 
 # 使用
 ### 部署单个服务
 ```
-root@kubecy-master21 /root/.yichen/kansctl:~ # ./kansctl apply -e moone_prod -t  prometheus
-```
-
-### 部署多个服务
-```
-root@kubecy-master21 /root/.yichen/kansctl:~ # ./kansctl apply -e moone_prod -t  redis-single,postgresql-single
-```
-
-### 部署全部服务
-
-```
-root@kubecy-master21 /root/.yichen/kansctl:~ # ./kansctl list
+root@kubecy-master21 /root/.kubecy/kansctl:~ # ./kansctl list
 2025-07-16 01:59:55 [kansctl:83] INFO 服务名称:
 -  postgresql-single
 -  redis-single
@@ -51,8 +40,20 @@ root@kubecy-master21 /root/.yichen/kansctl:~ # ./kansctl list
 -  alertmanager
 -  node-exporter
 
-root@kubecy-master21 /root/.yichen/kansctl:~ # ./kansctl apply -e moone_prod -t  all
+root@kubecy-master21 /root/.kubecy/kansctl:~ # ./kansctl apply -e moone_prod -t  prometheus
 ```
-<img width="2100" height="447" alt="image" src="https://github.com/user-attachments/assets/d98905f1-3b9e-4ccd-ac06-7877180c5efd" />
+
+### 部署多个服务
+```
+root@kubecy-master21 /root/.kubecy/kansctl:~ # ./kansctl apply -e moone_prod -t  redis-single,postgresql-single
+```
+
+### 部署全部服务
+
+```
+root@kubecy-master21 /root/.kubecy/kansctl:~ # ./kansctl apply -e moone_prod -t  all
+```
+<img width="2100" height="449" alt="image" src="https://github.com/user-attachments/assets/ce2a35df-855c-4b29-8734-0523a8c29808" />
+
 
 
