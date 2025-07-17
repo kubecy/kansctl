@@ -1,3 +1,4 @@
+---
 - name: apply redis-single
   gather_facts: false
   hosts: "{{ k8s_host }}"
