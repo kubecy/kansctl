@@ -32,18 +32,18 @@ root@kubecy-master21 /root/.kubecy:~ # cd kansctl/
 # 使用
 ### 部署单个服务
 ```
-root@kubecy-master21 /root/.kubecy/kansctl:~ # ./kansctl apply -e moone_prod -t  prometheus
+root@kubecy-master21 /root/.kubecy/kansctl:~ # ./kansctl apply -e prod -t prometheus
 ```
 
 ### 部署多个服务
 ```
-root@kubecy-master21 /root/.kubecy/kansctl:~ # ./kansctl apply -e moone_prod -t  redis-single,postgresql-single
+root@kubecy-master21 /root/.kubecy/kansctl:~ # ./kansctl apply -e prod -t redis-single,postgresql-single
 ```
 
 ### 部署全部服务
 
 ```
-root@kubecy-master21 /root/.kubecy/kansctl:~ # ./kansctl apply -e moone_prod -t  all
+root@kubecy-master21 /root/.kubecy/kansctl:~ # ./kansctl apply -e prod -t all
 ```
 ---
 
