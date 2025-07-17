@@ -1,0 +1,41 @@
+- name: integration/process/unix_socket_cleanup.yml
+  hosts: test-targets[0]
+  tasks:
+  - mitogen_action_script:
+      script: |
+        import glob
+        result['sockets'] = glob.glob('/tmp/mitogen_unix*.sock')
+    register: socks
+
+  - name: Run whoami locally in an ansible subprocess
+    vars:
+      ansible_python_interpreter: "{{ ansible_playbook_python }}"
+    shell: >-
+      ANSIBLE_CALLBACK_RESULT_FORMAT=json
+      ANSIBLE_LOAD_CALLBACK_PLUGINS=false
+      ANSIBLE_STRATEGY=mitogen_linear
+      ANSIBLE_SSH_ARGS="-o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa"
+      ANSIBLE_VERBOSITY="{{ ansible_verbosity }}"
+      ansible -m shell -c local -a whoami
+      {% for inv in ansible_inventory_sources %}
+      -i "{{ inv }}"
+      {% endfor %}
+      -e ansible_python_interpreter="{{ ansible_playbook_python }}"
+      test-targets
+    args:
+      chdir: ../..
+    register: out
+    connection: local
+    when: is_mitogen
+
+  - mitogen_action_script:
+      script: |
+        import glob
+        result['sockets'] = glob.glob('/tmp/mitogen_unix*.sock')
+    register: socks2
+
+  - assert_equal:
+      left: socks
+      right: socks2
+  tags:
+    - custom_python_new_style_module

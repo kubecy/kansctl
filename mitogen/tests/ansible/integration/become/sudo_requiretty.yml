@@ -1,0 +1,49 @@
+# Verify requiretty support
+
+- name: integration/become/sudo_requiretty.yml
+  hosts: test-targets
+  tasks:
+    # AIUI Vanilla Ansible cannot do sudo when requiretty configured
+    - include_tasks: ../_mitogen_only.yml
+
+    - name: Verify we can login to a non-passworded requiretty account
+      become: true
+      become_user: mitogen__require_tty
+      command:
+        cmd: whoami
+      changed_when: false
+      register: sudo_require_tty_whoami
+      when:
+        - become_unpriv_available
+
+    - assert:
+        that:
+          - sudo_require_tty_whoami.stdout == 'mitogen__require_tty'
+        fail_msg: |
+          sudo_require_tty_whoami={{ sudo_require_tty_whoami }}
+      when:
+        - become_unpriv_available
+
+    - name: Verify we can login to a passworded requiretty account
+      become: true
+      become_user: mitogen__require_tty_pw_required
+      vars:
+        ansible_become_pass: require_tty_pw_required_password
+      command:
+        cmd: whoami
+      changed_when: false
+      register: sudo_require_tty_password_whoami
+      when:
+        - become_unpriv_available
+
+    - assert:
+        that:
+          - sudo_require_tty_password_whoami.stdout == 'mitogen__require_tty_pw_required'
+        fail_msg: |
+          sudo_require_tty_password_whoami={{ sudo_require_tty_password_whoami }}
+      when:
+        - become_unpriv_available
+  tags:
+    - mitogen_only
+    - sudo
+    - sudo_requiretty

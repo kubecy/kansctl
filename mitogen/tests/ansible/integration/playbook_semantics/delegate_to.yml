@@ -1,0 +1,121 @@
+- name: integration/playbook_semantics/delegate_to.yml
+  hosts: test-targets
+  vars:
+    local_path: "/tmp/delegate_to.{{ inventory_hostname }}.txt"
+  tasks:
+    #
+    # delegate_to, no sudo
+    #
+    - name: "delegate_to, no sudo"
+      copy:
+        dest: "{{ local_path }}"
+        content: "Hello, world."
+        mode: u=rw,go=r
+      delegate_to: localhost
+
+    - name: "delegate_to, no sudo"
+      assert:
+        that:
+          - lookup('file', local_path) == 'Hello, world.'
+        fail_msg: "{{ lookup('file', local_path) }}"
+
+    - name: "delegate_to, no sudo"
+      file:
+        path: "{{ local_path }}"
+        state: absent
+      delegate_to: localhost
+
+
+    #
+    # connection:local, no sudo
+    #
+    - name: "connection:local, no sudo"
+      vars:
+        ansible_python_interpreter: "{{ ansible_playbook_python }}"
+      copy:
+        dest: "{{ local_path }}"
+        content: "Hello, world."
+        mode: u=rw,go=r
+      connection: local
+
+    - name: "connection:local, no sudo"
+      assert:
+        that:
+          - lookup('file', local_path) == 'Hello, world.'
+        fail_msg: "{{ lookup('file', local_path) }}"
+
+    - name: "connection:local, no sudo"
+      vars:
+        ansible_python_interpreter: "{{ ansible_playbook_python }}"
+      file:
+        path: "{{ local_path }}"
+        state: absent
+      connection: local
+
+
+    #
+    # delegate_to, sudo
+    #
+    - name: "delegate_to, sudo"
+      shell: |
+        whoami > "{{ local_path }}"
+      args:
+        creates: "{{ local_path }}"
+      delegate_to: localhost
+      become: true
+      tags:
+        - requires_local_sudo
+
+    - name: "delegate_to, sudo"
+      assert:
+        that:
+          - lookup('file', local_path) == 'root'
+        fail_msg: "{{ lookup('file', local_path) }}"
+      tags:
+        - requires_local_sudo
+
+    - name: "delegate_to, sudo"
+      file:
+        path: "{{ local_path }}"
+        state: absent
+      delegate_to: localhost
+      become: true
+      tags:
+        - requires_local_sudo
+
+
+    #
+    # connection:local, sudo
+    #
+    - name: "connection:local, sudo"
+      vars:
+        ansible_python_interpreter: "{{ ansible_playbook_python }}"
+      shell: |
+        whoami > "{{ local_path }}"
+      args:
+        creates: "{{ local_path }}"
+      connection: local
+      become: true
+      tags:
+        - requires_local_sudo
+
+    - name: "connection:local, sudo"
+      assert:
+        that:
+          - lookup('file', local_path) == 'root'
+        fail_msg: "{{ lookup('file', local_path) }}"
+      tags:
+        - requires_local_sudo
+
+    - name: "connection:local, sudo"
+      vars:
+        ansible_python_interpreter: "{{ ansible_playbook_python }}"
+      file:
+        path: "{{ local_path }}"
+        state: absent
+      connection: local
+      become: true
+      tags:
+        - requires_local_sudo
+  tags:
+    - delegate_to

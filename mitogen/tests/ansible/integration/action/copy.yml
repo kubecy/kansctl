@@ -1,0 +1,95 @@
+# Verify copy module for small and large files, and inline content.
+# To exercise https://github.com/mitogen-hq/mitogen/pull/1110 destination
+# files must have extensions and loops must use `with_items:`.
+
+- name: integration/action/copy.yml
+  hosts: test-targets
+  vars:
+    sourced_files:
+      - src: /tmp/copy-tiny-file
+        dest: /tmp/copy-tiny-file.out
+        content: this is a tiny file.
+        expected_checksum: f29faa9a6f19a700a941bf2aa5b281643c4ec8a0
+      - src: /tmp/copy-large-file
+        dest: /tmp/copy-large-file.out
+        content: "{{ 'x' * 200000 }}"
+        expected_checksum: 62951f943c41cdd326e5ce2b53a779e7916a820d
+
+    inline_files:
+      - dest: /tmp/copy-tiny-inline-file.out
+        content: tiny inline content
+        expected_checksum: b26dd6444595e2bdb342aa0a91721b57478b5029
+      - dest: /tmp/copy-large-inline-file.out
+        content: |
+          {{ 'y' * 200000 }}
+        expected_checksum: d675f47e467eae19e49032a2cc39118e12a6ee72
+
+    files: "{{ sourced_files + inline_files }}"
+  tasks:
+    - name: Create sourced files
+      copy:
+        dest: "{{ item.src }}"
+        content: "{{ item.content }}"
+        mode: u=rw,go=r
+      with_items: "{{ sourced_files }}"
+      loop_control:
+        label: "{{ item.src }}"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Cleanup lingering destination files
+      file:
+        path: "{{ item.dest }}"
+        state: absent
+      with_items: "{{ files }}"
+      loop_control:
+        label: "{{ item.dest }}"
+
+    - name: Copy sourced files
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: u=rw,go=r
+      with_items: "{{ sourced_files }}"
+      loop_control:
+        label: "{{ item.dest }}"
+
+    - name: Copy inline files
+      copy:
+        dest: "{{ item.dest }}"
+        content: "{{ item.content }}"
+        mode: u=rw,go=r
+      with_items: "{{ inline_files }}"
+      loop_control:
+        label: "{{ item.dest }}"
+
+    # stat results
+
+    - name: Stat copied files
+      stat:
+        path: "{{ item.dest }}"
+      with_items: "{{ files }}"
+      loop_control:
+        label: "{{ item.dest }}"
+      register: stat
+
+    - assert:
+        that:
+          - item.stat.checksum == item.item.expected_checksum
+        quiet: true  # Avoid spamming stdout with 400 kB of item.item.content
+        fail_msg: |
+          item={{ item }}
+      with_items: "{{ stat.results }}"
+      loop_control:
+        label: "{{ item.stat.path }}"
+
+    - name: Cleanup destination files
+      file:
+        path: "{{ item.dest }}"
+        state: absent
+      with_items: "{{ files }}"
+      loop_control:
+        label: "{{ item.dest }}"
+  tags:
+    - copy
+    - issue_1110

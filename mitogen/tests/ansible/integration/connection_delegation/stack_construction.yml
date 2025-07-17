@@ -1,0 +1,427 @@
+# https://github.com/dw/mitogen/issues/251
+
+# ansible_mitogen.connection internally reinterprets Ansible state into a
+# 'connection stack' -- this is just a list of dictionaries specifying a
+# sequence of proxied Router connection methods and their kwargs used to
+# establish the connection. That list is passed to ContextService, which loops
+# over the stack specifying via=(null or previous entry) for each connection
+# method.
+
+# mitogen_get_stack is a magic action that returns the stack, so we can test
+# all kinds of scenarios without actually needing a real environmnt.
+
+# Updating this file? Install 'pprintpp' and hack lib/callbacks/nice_stdout.py
+# to use it instead of the built-in function, then simply s/'/'/ to get the
+# cutpasteable formatted dicts below. WARNING: remove the trailing comma from
+# the result list element, it seems to cause assert to silently succeed!
+
+
+- name: integration/connection_delegation/stack_construction.yml
+  hosts: cd-normal
+  tasks:
+    - include_tasks: ../_mitogen_only.yml
+    # used later for local_action test.
+    - local_action: custom_python_detect_environment
+      register: local_env
+  tags:
+    - mitogen_only
+    - stack_construction
+
+
+- name: stack_construction.yml, cd-normal
+  hosts: cd-normal
+  tasks:
+    - include_tasks: ../_mitogen_only.yml
+    - mitogen_get_stack:
+      register: out
+    - assert_equal:
+        left: out.result
+        right: [
+          {
+            "kwargs": {
+              "connect_timeout": 30,
+              "doas_path": null,
+              "password": null,
+              "python_path": ["python3000"],
+              'remote_name': null,
+              "username": "normal-user",
+            },
+            "method": "doas",
+          }
+        ]
+  tags:
+    - mitogen_only
+    - stack_construction
+
+
+- name: stack_construction.yml, cd-normal, delegate_to=cd-alias
+  hosts: cd-normal
+  tasks:
+    - include_tasks: ../_mitogen_only.yml
+    - include_tasks: ../_expected_ssh_port.yml
+    - mitogen_get_stack:
+      delegate_to: cd-alias
+      register: out
+    - assert_equal:
+        left: out.result
+        right: [
+              {
+                  'kwargs': {
+                      'check_host_keys': 'ignore',
+                      'compression': True,
+                      'connect_timeout': 30,
+                      'hostname': 'alias-host',
+                      'identities_only': False,
+                      'identity_file': null,
+                      'keepalive_interval': 30,
+                      'keepalive_count': 10,
+                      'password': null,
+                      'port': '{{ expected_ssh_port }}',
+                      "python_path": ["python3000"],
+                      'remote_name': null,
+                      'ssh_args': [
+                          -o, ControlMaster=auto,
+                          -o, ControlPersist=60s,
+                          -o, ForwardAgent=yes,
+                          -o, HostKeyAlgorithms=+ssh-rsa,
+                          -o, PubkeyAcceptedKeyTypes=+ssh-rsa,
+                          -o, UserKnownHostsFile=/dev/null,
+                      ],
+                      'ssh_debug_level': 0,
+                      'ssh_path': 'ssh',
+                      'username': 'alias-user',
+                  },
+                  'method': 'ssh',
+              },
+          ]
+  tags:
+    - mitogen_only
+    - stack_construction
+
+
+- name: stack_construction.yml, cd-alias
+  hosts: cd-alias
+  tasks:
+    - include_tasks: ../_mitogen_only.yml
+    - include_tasks: ../_expected_ssh_port.yml
+    - mitogen_get_stack:
+      register: out
+    - assert_equal:
+        left: out.result
+        right: [
+              {
+                  'kwargs': {
+                      'check_host_keys': 'ignore',
+                      'compression': True,
+                      'connect_timeout': 30,
+                      'hostname': 'alias-host',
+                      'identities_only': False,
+                      'identity_file': null,
+                      'keepalive_interval': 30,
+                      'keepalive_count': 10,
+                      'password': null,
+                      'port': '{{ expected_ssh_port }}',
+                      "python_path": ["python3000"],
+                      'remote_name': null,
+                      'ssh_args': [
+                          -o, ControlMaster=auto,
+                          -o, ControlPersist=60s,
+                          -o, ForwardAgent=yes,
+                          -o, HostKeyAlgorithms=+ssh-rsa,
+                          -o, PubkeyAcceptedKeyTypes=+ssh-rsa,
+                          -o, UserKnownHostsFile=/dev/null,
+                      ],
+                      'ssh_debug_level': 0,
+                      'ssh_path': 'ssh',
+                      'username': 'alias-user',
+                  },
+                  'method': 'ssh',
+              },
+          ]
+  tags:
+    - mitogen_only
+    - stack_construction
+
+
+- name: stack_construction.yml, cd-normal-normal
+  hosts: cd-normal-normal
+  tasks:
+    - include_tasks: ../_mitogen_only.yml
+    - include_tasks: ../_expected_ssh_port.yml
+    - mitogen_get_stack:
+      register: out
+    - assert_equal:
+        left: out.result
+        right: [
+              {
+                  'kwargs': {
+                      'connect_timeout': 30,
+                      'doas_path': null,
+                      'password': null,
+                      "python_path": ["python3000"],
+                      'remote_name': null,
+                      'username': 'normal-user',
+                  },
+                  'method': 'doas',
+              },
+              {
+                  'kwargs': {
+                      'check_host_keys': 'ignore',
+                      'compression': True,
+                      'connect_timeout': 30,
+                      'hostname': 'cd-normal-normal',
+                      'identities_only': False,
+                      'identity_file': null,
+                      'keepalive_interval': 30,
+                      'keepalive_count': 10,
+                      'password': null,
+                      'port': '{{ expected_ssh_port }}',
+                      "python_path": ["python3000"],
+                      'remote_name': null,
+                      'ssh_args': [
+                          -o, ControlMaster=auto,
+                          -o, ControlPersist=60s,
+                          -o, ForwardAgent=yes,
+                          -o, HostKeyAlgorithms=+ssh-rsa,
+                          -o, PubkeyAcceptedKeyTypes=+ssh-rsa,
+                          -o, UserKnownHostsFile=/dev/null,
+                      ],
+                      'ssh_debug_level': 0,
+                      'ssh_path': 'ssh',
+                      'username': 'ansible-cfg-remote-user',
+                  },
+                  'method': 'ssh',
+              },
+          ]
+  tags:
+    - mitogen_only
+    - stack_construction
+
+
+- name: stack_construction.yml, cd-normal-alias
+  hosts: cd-normal-alias
+  tasks:
+    - include_tasks: ../_mitogen_only.yml
+    - include_tasks: ../_expected_ssh_port.yml
+    - mitogen_get_stack:
+      register: out
+    - assert_equal:
+        left: out.result
+        right: [
+              {
+                  'kwargs': {
+                      'check_host_keys': 'ignore',
+                      'compression': True,
+                      'connect_timeout': 30,
+                      'hostname': 'alias-host',
+                      'identities_only': False,
+                      'identity_file': null,
+                      'keepalive_interval': 30,
+                      'keepalive_count': 10,
+                      'password': null,
+                      'port': null,
+                      "python_path": ["python3000"],
+                      'remote_name': null,
+                      'ssh_args': [
+                          -o, ControlMaster=auto,
+                          -o, ControlPersist=60s,
+                          -o, ForwardAgent=yes,
+                          -o, HostKeyAlgorithms=+ssh-rsa,
+                          -o, PubkeyAcceptedKeyTypes=+ssh-rsa,
+                          -o, UserKnownHostsFile=/dev/null,
+                      ],
+                      'ssh_debug_level': 0,
+                      'ssh_path': 'ssh',
+                      'username': 'alias-user',
+                  },
+                  'method': 'ssh',
+              },
+              {
+                  'kwargs': {
+                      'check_host_keys': 'ignore',
+                      'compression': True,
+                      'connect_timeout': 30,
+                      'hostname': 'cd-normal-alias',
+                      'identities_only': False,
+                      'identity_file': null,
+                      'keepalive_interval': 30,
+                      'keepalive_count': 10,
+                      'password': null,
+                      'port': '{{ expected_ssh_port }}',
+                      "python_path": ["python3000"],
+                      'remote_name': null,
+                      'ssh_args': [
+                          -o, ControlMaster=auto,
+                          -o, ControlPersist=60s,
+                          -o, ForwardAgent=yes,
+                          -o, HostKeyAlgorithms=+ssh-rsa,
+                          -o, PubkeyAcceptedKeyTypes=+ssh-rsa,
+                          -o, UserKnownHostsFile=/dev/null,
+                      ],
+                      'ssh_debug_level': 0,
+                      'ssh_path': 'ssh',
+                      'username': 'ansible-cfg-remote-user',
+                  },
+                  'method': 'ssh',
+              },
+          ]
+  tags:
+    - stack_construction
+
+
+- name: stack_construction.yml, cd-newuser-normal-normal
+  hosts: cd-newuser-normal-normal
+  tasks:
+    - include_tasks: ../_mitogen_only.yml
+    - include_tasks: ../_expected_ssh_port.yml
+    - mitogen_get_stack:
+      register: out
+    - assert_equal:
+        left: out.result
+        right: [
+              {
+                  'kwargs': {
+                      'connect_timeout': 30,
+                      'doas_path': null,
+                      'password': null,
+                      "python_path": ["python3000"],
+                      'remote_name': null,
+                      'username': 'normal-user',
+                  },
+                  'method': 'doas',
+              },
+              {
+                  'kwargs': {
+                      'check_host_keys': 'ignore',
+                      'compression': True,
+                      'connect_timeout': 30,
+                      'hostname': 'cd-newuser-normal-normal',
+                      'identities_only': False,
+                      'identity_file': null,
+                      'keepalive_interval': 30,
+                      'keepalive_count': 10,
+                      'password': null,
+                      'port': '{{ expected_ssh_port }}',
+                      "python_path": ["python3000"],
+                      'remote_name': null,
+                      'ssh_args': [
+                          -o, ControlMaster=auto,
+                          -o, ControlPersist=60s,
+                          -o, ForwardAgent=yes,
+                          -o, HostKeyAlgorithms=+ssh-rsa,
+                          -o, PubkeyAcceptedKeyTypes=+ssh-rsa,
+                          -o, UserKnownHostsFile=/dev/null,
+                      ],
+                      'ssh_debug_level': 0,
+                      'ssh_path': 'ssh',
+                      'username': 'newuser-normal-normal-user',
+                  },
+                  'method': 'ssh',
+              },
+          ]
+  tags:
+    - mitogen_only
+    - stack_construction
+
+
+- name: stack_construction.yml, cd-newuser-normal-normal, delegate_to=cd-alias
+  hosts: cd-newuser-normal-normal
+  tasks:
+    - include_tasks: ../_mitogen_only.yml
+    - include_tasks: ../_expected_ssh_port.yml
+    - mitogen_get_stack:
+      delegate_to: cd-alias
+      register: out
+    - assert_equal:
+        left: out.result
+        right: [
+              {
+                  'kwargs': {
+                      'check_host_keys': 'ignore',
+                      'compression': True,
+                      'connect_timeout': 30,
+                      'hostname': 'alias-host',
+                      'identities_only': False,
+                      'identity_file': null,
+                      'keepalive_interval': 30,
+                      'keepalive_count': 10,
+                      'password': null,
+                      'port': '{{ expected_ssh_port }}',
+                      "python_path": ["python3000"],
+                      'remote_name': null,
+                      'ssh_args': [
+                          -o, ControlMaster=auto,
+                          -o, ControlPersist=60s,
+                          -o, ForwardAgent=yes,
+                          -o, HostKeyAlgorithms=+ssh-rsa,
+                          -o, PubkeyAcceptedKeyTypes=+ssh-rsa,
+                          -o, UserKnownHostsFile=/dev/null,
+                      ],
+                      'ssh_debug_level': 0,
+                      'ssh_path': 'ssh',
+                      'username': 'alias-user',
+                  },
+                  'method': 'ssh',
+              },
+          ]
+  tags:
+    - mitogen_only
+    - stack_construction
+
+
+- name: stack_construction.yml, cd-newuser-normal-normal, local_action
+  hosts: cd-newuser-normal-normal
+  tasks:
+    - include_tasks: ../_mitogen_only.yml
+    - local_action: mitogen_get_stack
+      register: out
+    - assert_equal:
+        left: out.result
+        right: [
+          {
+            'kwargs': {
+              "python_path": ["{{ansible_playbook_python}}"],
+            },
+            'method': 'local',
+          },
+        ]
+  tags:
+    - mitogen_only
+    - stack_construction
+
+
+- name: stack_construction.yml, cd-newuser-doas-normal
+  hosts: cd-newuser-doas-normal
+  tasks:
+    - include_tasks: ../_mitogen_only.yml
+    - mitogen_get_stack:
+      register: out
+    - assert_equal:
+        left: out.result
+        right: [
+          {
+            'kwargs': {
+              'connect_timeout': 30,
+              'doas_path': null,
+              'password': null,
+              'python_path': ["python3000"],
+              'remote_name': null,
+              'username': 'normal-user',
+            },
+            'method': 'doas',
+          },
+          {
+            'kwargs': {
+              'connect_timeout': 30,
+              'doas_path': null,
+              'password': null,
+              'python_path': ["python3000"],
+              'remote_name': null,
+              'username': 'newuser-doas-normal-user',
+            },
+            'method': 'doas',
+          },
+        ]
+  tags:
+    - mitogen_only
+    - stack_construction
