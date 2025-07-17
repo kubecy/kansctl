@@ -13,7 +13,6 @@ set -o nounset
 set -o errexit
 
 
-## 全局变量定义
 SERVICE_DIR="./roles"
 ENV_DIR="./moone"
 PLAYBOOK_FILE="./playbooks/site.yml"
@@ -39,8 +38,6 @@ function logger() {
     *) ;;
   esac
 }
-
-
 
 function usage() {
     echo -e "\033[33mUsage:\033[0m kansctl command -e <env> -t <service> [args]"
@@ -106,7 +103,6 @@ function apply() {
         ansible-playbook -e "@${ENV_FILE}" -t "${SERVICE_NAME}" "${PLAYBOOK_FILE}"
     fi
 }
-
 
 function delete() {
     local ENV_NAME="$2"
@@ -220,7 +216,6 @@ function main() {
             [[ "$#" -eq 1 ]] || { usage >&2; exit 2; }
             list
             ;; 
-            
         (apply)
             [[ "$#" -gt 2 ]] || { usage >&2; exit 2; }
             apply "${@:2}"
