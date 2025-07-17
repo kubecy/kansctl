@@ -33,23 +33,23 @@ spec:
                 secretKeyRef:
                   name: postgresql
                   key: db_admin_pass
-            #- name: POSTGRES_DB
-            #  valueFrom:
-            #    secretKeyRef:
-            #      name: postgresql
-            #      key: db_name
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql
+                  key: db_name
           ports:
             - name: postgres
               containerPort: 5432
               protocol: TCP
           livenessProbe:
             exec:
-              command: ["pg_isready", "-h", "localhost", "-U", "kubecy"]
+              command: ["pg_isready", "-h", "localhost", "-U", "kubecy", "-d", "moone"]
             initialDelaySeconds: 30
             timeoutSeconds: 5
           readinessProbe:
             exec:
-              command: ["pg_isready", "-h", "localhost", "-U", "kubecy"]
+              command: ["pg_isready", "-h", "localhost", "-U", "kubecy", "-d", "moone"]
             initialDelaySeconds: 5
             timeoutSeconds: 1
           volumeMounts:
