@@ -230,12 +230,8 @@ function main() {
             delete "${@:2}"
             ;;
         (setup)
-            if [[ "$2" == "tab" ]]; then
-                setup_tab
-            else
-                usage
-                exit 1
-            fi
+            [[ "$2" == "tab" ]] || { usage >&2; exit 2; }
+            setup_tab
             ;;
         (*)
             usage
