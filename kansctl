@@ -116,7 +116,7 @@ function delete() {
     logger warn "即将执行服务卸载操作，请确认!"
     logger debug "将在 10 秒后开始删除 [$ENV_NAME] 环境中的 [$SERVICE_NAME] 服务:"
 
-    for i in {10..1}; do
+    for i in {2..1}; do
       echo -ne "\r剩余时间：\033[33m${i}\033[0m 秒，请按 Ctrl+C 取消..."
       sleep 1
     done

@@ -1,12 +1,13 @@
 ---
-kind: StatefulSet
 apiVersion: apps/v1
+kind: StatefulSet
 metadata:
   name: postgres
-  namespace: {{ namespace }} 
+  namespace: {{ namespace }}
   labels:
     app: postgres
 spec:
+  serviceName: "postgres"
   replicas: 1
   selector:
     matchLabels:
@@ -20,68 +21,63 @@ spec:
         postgresql: "true"
       containers:
         - name: postgres
-          image: {{ service.postgresql_single }} 
+          image: {{ service.postgresql_single }}
           env:
-          - name: POSTGRES_USER
-            value: "admin"
-          - name: POSTGRES_PASSWORD
-            value: "adminpass"
-          - name: DB_USER
-            valueFrom:
-              secretKeyRef:
-                name: gitlab
-                key: db_user
-          - name: DB_PASS
-            valueFrom:
-              secretKeyRef:
-                name: gitlab
-                key: db_pass
-          - name: DB_NAME
-            valueFrom:
-              secretKeyRef:
-                name: gitlab
-                key: db_name
-          - name: DB_EXTENSION
-            value: pg_trgm
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql
+                  key: db_admin_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql
+                  key: db_admin_pass
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql
+                  key: db_user
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql
+                  key: db_pass
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql
+                  key: db_name
+            - name: DB_EXTENSION
+              value: pg_trgm
           ports:
             - name: postgres
               containerPort: 5432
               protocol: TCP
-
           livenessProbe:
             exec:
-              command:
-              - pg_isready
-              - -h
-              - localhost
-              - -U
-              - postgres
+              command: ["pg_isready", "-h", "localhost", "-U", "postgres"]
             initialDelaySeconds: 30
             timeoutSeconds: 5
           readinessProbe:
             exec:
-              command:
-              - pg_isready
-              - -h
-              - localhost
-              - -U
-              - postgres
+              command: ["pg_isready", "-h", "localhost", "-U", "postgres"]
             initialDelaySeconds: 5
             timeoutSeconds: 1
           volumeMounts:
-            - name: postgres-storage
+            - name: postgresql-data
               mountPath: "/var/lib/postgresql/data"
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              cpu: '3'
-              memory: 12Gi
+              cpu: "1"
+              memory: 1Gi
             requests:
               cpu: 200m
               memory: 256Mi
       restartPolicy: Always
       priorityClassName: system-node-critical
       volumes:
-        - name: postgres-storage
+        - name: postgresql-data
           persistentVolumeClaim:
             claimName: postgresql-data-pvc

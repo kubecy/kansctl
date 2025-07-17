@@ -20,7 +20,7 @@ storage:
 
 service:
   redis_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/redis:6.2.18"
-  postgresql_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/postgresql:14.18-alpine3.21"
+  postgresql_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/postgresql:v17.5-alpine3.22"
 
   ## 监控告警
   prometheus: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/prometheus:v2.53.4"
