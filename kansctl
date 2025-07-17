@@ -57,9 +57,9 @@ function usage() {
   -t <服务>                          指定部署服务，对应 roles 目录下的服务名
 
 环境 (env):
-  moone_prod                         moone 生产环境
-  moone_dev                          moone 开发环境
-  moone_test                         moone 测试环境
+  prod                               moone 生产环境
+  dev                                moone 开发环境
+  test                               moone 测试环境
 
 服务 (service):
   redis-single                       Redis      单实例
@@ -69,9 +69,10 @@ function usage() {
 
 示例 (examples):
   ./kansctl list
-  ./kansctl apply  -e moone_prod -t redis-single
-  ./kansctl delete -e moone_test -t mysql-single
-  ./kansctl delete -e moone_prod -t all
+  ./kansctl apply  -e prod -t redis-single
+  ./kansctl delete -e test -t mysql-single
+  ./kansctl delete -e prod -t all
+  ./kansctl setup tab                在当前用户目录生成 ~/.kansctl_completion.sh
 
 提示 (tip):
   请确保 roles 目录和对应的 <环境>.yml 配置文件已存在，否则部署将失败。
@@ -114,9 +115,9 @@ function delete() {
 
 
     logger warn "即将执行服务卸载操作，请确认!"
-    logger debug "将在 10 秒后开始删除 [$ENV_NAME] 环境中的 [$SERVICE_NAME] 服务:"
+    logger debug "将在 3 秒后开始删除 [$ENV_NAME] 环境中的 [$SERVICE_NAME] 服务:"
 
-    for i in {2..1}; do
+    for i in {3..1}; do
       echo -ne "\r剩余时间：\033[33m${i}\033[0m 秒，请按 Ctrl+C 取消..."
       sleep 1
     done
@@ -135,13 +136,81 @@ function delete() {
     fi
 }
 
+function setup_tab() {
+cat > ~/.kansctl_completion.sh <<'EOF'
+_kansctl_completions()
+{
+    local cur prev words cword
+    _init_completion || return
 
-#function kansctlTab() {
-#
-#
-#}
+    local CMDS="list apply delete setup"
+    local ENVS="prod dev test"
+    local SERVICE_DIR="./roles"
+    local SERVICES
 
+    if [[ -d "./moone" ]]; then
+        ENVS=$(ls ./moone/*.yml 2>/dev/null | xargs -n1 basename | sed 's/\.yml$//')
+    else
+        ENVS="prod dev test"
+    fi
 
+    if [[ -d "$SERVICE_DIR" ]]; then
+        SERVICES=$(find "$SERVICE_DIR" -mindepth 1 -maxdepth 1 -type d -printf "%f\n")
+    else
+        SERVICES="redis-single postgresql-single mysql-single rabbitmq-single"
+    fi
+    
+    local SETUP_SUB_CMDS="tab"
+
+    if [[ $cword -eq 1 ]]; then
+        COMPREPLY=( $(compgen -W "$CMDS" -- "$cur") )
+        return
+    fi
+
+    if [[ "${words[1]}" == "setup" ]]; then
+        if [[ $cword -eq 2 ]]; then
+            COMPREPLY=( $(compgen -W "$SETUP_SUB_CMDS" -- "$cur") )
+            return
+        fi
+    fi
+
+    local HAS_E=false
+    local HAS_T=false
+    for ((i=0; i<${#words[@]}; i++)); do
+        [[ "${words[i]}" == "-e" ]] && HAS_E=true
+        [[ "${words[i]}" == "-t" ]] && HAS_T=true
+    done
+
+    if [[ "${words[1]}" == "apply" || "${words[1]}" == "delete" ]]; then
+        if [[ "$HAS_E" != true && "$cur" != -* ]]; then
+            COMPREPLY=( $(compgen -W "-e" -- "$cur") )
+            return
+        fi
+
+        if [[ "$prev" == "-e" ]]; then
+            COMPREPLY=( $(compgen -W "$ENVS" -- "$cur") )
+            return
+        fi
+
+        if [[ "$HAS_E" = true && "$HAS_T" != true ]]; then
+            COMPREPLY=( $(compgen -W "-t" -- "$cur") )
+            return
+        fi
+
+        if [[ "$prev" == "-t" ]]; then
+            COMPREPLY=( $(compgen -W "$SERVICES" -- "$cur") )
+            return
+        fi
+    fi
+}
+
+complete -F _kansctl_completions ./kansctl
+EOF
+
+  logger info  "Tab 补全脚本已写入   ~/.kansctl_completion.sh"
+  logger debug "请执行命令立即生效：source ~/.kansctl_completion.sh"
+  echo " "
+}
 
 
 function main() {
@@ -159,6 +228,14 @@ function main() {
         (delete)
             [[ "$#" -gt 2 ]] || { usage >&2; exit 2; }
             delete "${@:2}"
+            ;;
+        (setup)
+            if [[ "$2" == "tab" ]]; then
+                setup_tab
+            else
+                usage
+                exit 1
+            fi
             ;;
         (*)
             usage
