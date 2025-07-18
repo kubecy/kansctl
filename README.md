@@ -45,6 +45,6 @@ root@kubecy-master21 /root/.kubecy/kansctl:~ # ./kansctl apply -e moone_prod -t 
 ```
 root@kubecy-master21 /root/.kubecy/kansctl:~ # ./kansctl apply -e moone_prod -t  all
 ```
-
+---
 
 
