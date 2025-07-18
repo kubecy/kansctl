@@ -1,0 +1,76 @@
+# 从节点优化配置
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-cluster-secondary-configmap
+  namespace: prod-db
+  labels:
+    app.bigquant.ai/component: mysql-cluster
+    app.bigquant.ai/mysql-cluster-role: secondary
+    config-type: read-scale
+  annotations:
+    app.bigquant.ai/component: mysql-cluster
+    app.bigquant.ai/mysql-cluster-role: secondary
+    config-version: "2023.10-prod"
+data:
+  my.cnf: |-
+    [mysqld]
+    # ===== 核心配置 =====
+    server-id = AUTO  # 自动生成唯一ID
+    read_only = ON
+    super_read_only = ON
+    relay_log = /bitnami/mysql/relaylog/relay-bin
+    relay_log_recovery = ON
+    
+    # ===== 性能优化 =====
+    innodb_buffer_pool_size = 8G
+    innodb_read_only_compressed = OFF
+    slave_parallel_type = LOGICAL_CLOCK
+    slave_parallel_workers = 8
+    slave_preserve_commit_order = ON
+    slave_skip_errors = OFF
+    
+    # ===== 网络与连接 =====
+    bind-address = 0.0.0.0
+    max_allowed_packet = 256M
+    skip_name_resolve = ON
+    connect_timeout = 10
+    wait_timeout = 28800
+    interactive_timeout = 28800
+    
+    # ===== 日志与监控 =====
+    slow_query_log = ON
+    long_query_time = 2
+    log_queries_not_using_indexes = OFF
+    log_slow_admin_statements = ON
+    log_error = /opt/bitnami/mysql/logs/mysqld-error.log
+    slow_query_log_file = /opt/bitnami/mysql/logs/mysqld-slow.log
+    performance_schema = ON
+    
+    # ===== 路径配置 =====
+    basedir = /opt/bitnami/mysql
+    datadir = /bitnami/mysql/data
+    tmpdir = /opt/bitnami/mysql/tmp
+    socket = /opt/bitnami/mysql/tmp/mysql.sock
+    pid-file = /opt/bitnami/mysql/tmp/mysqld.pid
+    
+    # ===== 字符集配置 =====
+    character_set_server = utf8mb4
+    collation_server = utf8mb4_unicode_ci
+    default_authentication_plugin = mysql_native_password
+    
+    # ===== 复制优化 =====
+    relay_log_info_repository = TABLE
+    master_info_repository = TABLE
+    replicate_ignore_db = mysql, sys, performance_schema
+    slave_sql_verify_checksum = ON
+    slave_net_timeout = 60
+    
+    [client]
+    socket = /opt/bitnami/mysql/tmp/mysql.sock
+    default-character-set = utf8mb4
+    
+    [mysqld_safe]
+    log-error = /opt/bitnami/mysql/logs/mysqld-error.log
+    pid-file = /opt/bitnami/mysql/tmp/mysqld.pid

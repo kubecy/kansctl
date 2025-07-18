@@ -1,0 +1,34 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prod-db-mysql-cluster-primary-data-0
+  namespace: prod-db
+  labels:
+    app.bigquant.ai/component: mysql-cluster
+    app.bigquant.ai/mysql-cluster-role: primary
+    storage-class.performance-tier: platinum
+  annotations:
+    app.bigquant.ai/component: mysql-cluster
+    app.bigquant.ai/mysql-cluster-role: primary
+    pv.kubernetes.io/provisioned-by: local-volume-provisioner
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 500Gi
+  volumeMode: Filesystem
+  storageClassName: prod-db-mysql-cluster-primary-storage
+  persistentVolumeReclaimPolicy: Retain
+  local:
+    path: /mnt/ssd-volumes/mysql-primary-0
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values: ["db-node-01"]
+  mountOptions:
+    - noatime
+    - nodiratime
+    - nobarrier

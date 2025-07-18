@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mysql
+  namespace: default
+  labels:
+    app.kubernetes.io/name: mysql
+    app.kubernetes.io/instance: mysql
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: mysql
+  annotations:
+    iam.amazonaws.com/role: arn:aws:iam::123456789012:role/mysql-k8s-role
+automountServiceAccountToken: false
+secrets:
+  - name: mysql-secrets
