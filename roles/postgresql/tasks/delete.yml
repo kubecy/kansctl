@@ -1,4 +1,4 @@
 ---
-- name: 删除 postgresql-single 实例
-  shell: kubectl delete -f /etc/kansctl/yaml/postgresql-single
+- name: 删除 postgresql 实例
+  shell: kubectl delete -f /etc/kansctl/yaml/postgresql
   ignore_errors: yes

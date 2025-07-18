@@ -21,7 +21,7 @@ spec:
         postgresql: "true"
       containers:
         - name: postgres
-          image: {{ service.postgresql_single }}
+          image: {{ service.postgresql }}
           env:
             - name: POSTGRES_USER
               valueFrom:

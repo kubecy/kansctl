@@ -1,8 +1,8 @@
 ---
-- name: 安装 postgresql-single 服务
+- name: 安装 postgresql 服务
   include_tasks: install.yml
   when: state | default('present') == 'present'
 
-- name: 卸载 postgresql-single 服务
+- name: 卸载 postgresql 服务
   include_tasks: delete.yml
   when: state | default('present') == 'absent'

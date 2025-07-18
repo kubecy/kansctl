@@ -1,13 +1,13 @@
 ---
-- name: 在目录主机创建 /etc/kansctl/yaml/postgresql-single 目录 
+- name: 在目录主机创建 /etc/kansctl/yaml/postgresql 目录 
   file:
-    path: /etc/kansctl/yaml/postgresql-single
+    path: /etc/kansctl/yaml/postgresql
     state: directory
 
-- name: 渲染 postgresql-single 所需要的资源 YAML 清单 
+- name: 渲染 postgresql 所需要的资源 YAML 清单 
   template:
     src: "{{ item }}"
-    dest: "/etc/kansctl/yaml/postgresql-single/{{ item | basename | regex_replace('.j2$', '') }}"
+    dest: "/etc/kansctl/yaml/postgresql/{{ item | basename | regex_replace('.j2$', '') }}"
     mode: "0660"
   loop:
     - 01-pv-postgresql.yml.j2
@@ -17,5 +17,5 @@
     - 05-svc-postgresql.yml.j2
 
 - name: 部署 postgresql-single 实例
-  shell: kubectl apply -f /etc/kansctl/yaml/postgresql-single 
+  shell: kubectl apply -f /etc/kansctl/yaml/postgresql
 
