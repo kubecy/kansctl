@@ -1,0 +1,26 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: mysql-storage
+  labels:
+    app/component: mysql
+    app/mysql-role: mysql
+  annotations:
+    app/component: mysql
+    app/mysql-role: mysql
+
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+#parameters:
+#  type: ssd
+#  fsType: xfs
+#  iopsPerGB: "50"
+#  throughput: "500Mi"
+mountOptions:
+  - noatime
+  - nodiratime
+  - nobarrier

@@ -17,10 +17,12 @@ storage:
   path: 
 
 
-
+## 服务镜像
 service:
-  redis_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/redis:6.2.18"
-  postgresql_single: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/postgresql:v17.5-alpine3.22"
+  redis: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/redis:6.2.18"
+  postgresql: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/postgresql:v17.5-alpine3.22"
+  mysql: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/mysql:v8.0.36"
+  mysqld-exporter: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/mysqld-exporter:v0.17.2"
 
   ## 监控告警
   prometheus: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/prometheus:v2.53.4"
@@ -28,3 +30,5 @@ service:
   node_exporter: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/node-exporter:v1.9.1"
   prometheus_config_reloader: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/prometheus-config-reloader:v0.55.1"
   prometheus_webhook_dingtalk: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/prometheus-webhook-dingtalk:v2.1.0"
+
+

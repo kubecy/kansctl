@@ -1,15 +1,15 @@
 ---
-- name: apply redis-single
+- name: apply redis
   gather_facts: false
   hosts: "{{ k8s_host }}"
   roles:
-    - { role: redis-single, tags: redis-single, when: service.redis_single is defined }
+    - { role: redis, tags: redis, when: service.redis is defined }
 
-- name: apply postgresql-single
+- name: apply postgresql
   gather_facts: false
   hosts: "{{ k8s_host }}"
   roles:
-    - { role: postgresql-single, tags: postgresql-single, when: service.postgresql_single is defined }
+    - { role: postgresql, tags: postgresql, when: service.postgresql is defined }
 
 
 ## 监控告警
@@ -30,6 +30,15 @@
   hosts: "{{ k8s_host }}"
   roles:
     - { role: node-exporter, tags: node-exporter, when: service.node_exporter is defined }
+
+
+
+
+- name: apply mysql
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: mysql, tags: mysql, when: service.mysql is defined }
 
 #- name: apply prometheus-config-reloader 
 #  gather_facts: false

@@ -2,15 +2,14 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: prod-db-mysql-cluster-primary-data-0
-  namespace: prod-db
+  name: moone-mysql-pv-data-0
+  namespace: moone #{{ namespace  }}
   labels:
-    app.bigquant.ai/component: mysql-cluster
-    app.bigquant.ai/mysql-cluster-role: primary
-    storage-class.performance-tier: platinum
+    app/component: mysql
+    app/mysql-role: mysql
   annotations:
-    app.bigquant.ai/component: mysql-cluster
-    app.bigquant.ai/mysql-cluster-role: primary
+    app/component: mysql
+    app/mysql-role: mysql
     pv.kubernetes.io/provisioned-by: local-volume-provisioner
 spec:
   accessModes: [ReadWriteOnce]

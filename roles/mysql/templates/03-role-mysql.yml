@@ -2,13 +2,12 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: mysql
-  namespace: default
+  name: moone-mysql-role
+  namespace: moone #{{ namespace  }}
   labels:
     app.kubernetes.io/name: mysql
     app.kubernetes.io/instance: mysql
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/part-of: mysql
+    app.kubecy: mysql
 rules:
   - apiGroups: [""]
     resources: ["endpoints"]

@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: moone-mysql-sa
+  namespace: moone #{{ namespace }}
+  labels:
+    app.kubernetes.io/name: mysql
+    app.kubernetes.io/instance: mysql
+    app.kubecy: mysql
+automountServiceAccountToken: false  ##   禁用自动挂载 Kubernetes API Token 到 Pod /var/run/secrets/kubernetes.io/serviceaccount/token
+#secrets:
+#  - name: mysql-secrets
