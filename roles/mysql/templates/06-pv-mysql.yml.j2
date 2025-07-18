@@ -10,24 +10,24 @@ metadata:
   annotations:
     app/component: mysql
     app/mysql-role: mysql
-    pv.kubernetes.io/provisioned-by: local-volume-provisioner
 spec:
   accessModes: [ReadWriteOnce]
   capacity:
-    storage: 500Gi
+    storage: 5Gi
   volumeMode: Filesystem
-  storageClassName: prod-db-mysql-cluster-primary-storage
+  storageClassName: mysql-storage 
   persistentVolumeReclaimPolicy: Retain
-  local:
-    path: /mnt/ssd-volumes/mysql-primary-0
+  hostPath:
+    path: /mnt/kubecy/moone-mysql-pv-data-0
+    type: DirectoryOrCreate
   nodeAffinity:
     required:
       nodeSelectorTerms:
         - matchExpressions:
             - key: kubernetes.io/hostname
               operator: In
-              values: ["db-node-01"]
-  mountOptions:
-    - noatime
-    - nodiratime
-    - nobarrier
+              values: ["kubecy-worker26"]
+#  mountOptions:
+#    - noatime
+#    - nodiratime
+#    - nobarrier

@@ -1,2 +1,8 @@
 ---
-# tasks file for mysql
+- name: 安装 mysql 服务
+  include_tasks: install.yml
+  when: state | default('present') == 'present'
+
+- name: 卸载 mysql 服务
+  include_tasks: delete.yml
+  when: state | default('present') == 'absent'

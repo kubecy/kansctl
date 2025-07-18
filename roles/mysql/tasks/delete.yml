@@ -1,0 +1,4 @@
+---
+- name: 删除 mysql 实例
+  shell: kubectl delete -f /etc/kansctl/yaml/mysql
+  ignore_errors: yes

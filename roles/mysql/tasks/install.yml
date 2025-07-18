@@ -1,0 +1,24 @@
+---
+- name: 在目录主机创建 /etc/kansctl/yaml/mysql 目录 
+  file:
+    path: /etc/kansctl/yaml/mysql
+    state: directory
+
+- name: 渲染 mysql 所需要的资源 YAML 清单 
+  template:
+    src: "{{ item }}"
+    dest: "/etc/kansctl/yaml/mysql/{{ item | basename | regex_replace('.j2$', '') }}"
+    mode: "0660"
+  loop:
+    - 01-secret-mysql.yml.j2
+    - 02-sa-mysql.yml.j2
+    - 03-role-mysql.yml.j2
+    - 04-rolebinding-mysql.yml.j2
+    - 05-sc-mysql.yml.j2
+    - 06-pv-mysql.yml.j2
+    - 07-cm-mysql.yml.j2
+    - 08-sts-mysql.yml.j2
+    - 09-svc-mysql.yml.j2
+
+- name: 部署 mysql 实例
+  shell: kubectl apply -f /etc/kansctl/yaml/mysql

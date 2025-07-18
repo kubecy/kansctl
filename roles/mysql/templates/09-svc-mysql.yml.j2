@@ -1,0 +1,68 @@
+---
+# Headless Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-svc-headless
+  namespace: moone
+  labels:
+    app.kubernetes.io/name: mysql
+    app.kubernetes.io/instance: mysql
+    app.kubernetes.io/kubecy: mysql
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: mysql
+    app.kubernetes.io/instance: mysql
+    app.kubernetes.io/kubecy: mysql
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: mysql
+    - name: metrics
+      port: 9104
+      targetPort: metrics
+---
+# Primary Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-primary
+  namespace: moone
+  labels:
+    app.kubernetes.io/name: mysql
+    app.kubernetes.io/instance: mysql
+    app.kubernetes.io/kubecy: mysql
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: mysql
+    app.kubernetes.io/instance: mysql
+    app.kubernetes.io/kubecy: mysql
+    app.kubernetes.io/component: mysql
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: mysql
+---
+# Metrics Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-metrics
+  namespace: moone
+  labels:
+    app.kubernetes.io/name: mysql
+    app.kubernetes.io/instance: mysql
+    app.kubernetes.io/kubecy: mysql
+    app.kubernetes.io/component: metrics
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: mysql
+    app.kubernetes.io/instance: mysql
+    app.kubernetes.io/kubecy: mysql
+  ports:
+    - name: metrics
+      port: 9104
+      targetPort: metrics
