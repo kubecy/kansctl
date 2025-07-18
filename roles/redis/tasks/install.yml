@@ -1,13 +1,13 @@
 ---
-- name: 在目录主机创建 /etc/kansctl/yaml/redis-single 目录
+- name: 在目录主机创建 /etc/kansctl/yaml/redis 目录
   file:
-    path: /etc/kansctl/yaml/redis-single
+    path: /etc/kansctl/yaml/redis
     state: directory
 
-- name: 渲染 redis-single 所需要的 YAML 资源清单
+- name: 渲染 redis 所需要的 YAML 资源清单
   template:
     src: "{{ item }}"
-    dest: "/etc/kansctl/yaml/redis-single/{{ item | basename | regex_replace('.j2$', '') }}"
+    dest: "/etc/kansctl/yaml/redis/{{ item | basename | regex_replace('.j2$', '') }}"
     mode: "0660"
   loop:
     - 01-pv-redis.yml.j2
@@ -16,5 +16,5 @@
     - 04-sts-redis.yml.j2
     - 05-svc-redis.yml.j2
 
-- name: 部署 redis-single 实例
-  shell: kubectl apply -f /etc/kansctl/yaml/redis-single 
+- name: 部署 redis 实例
+  shell: kubectl apply -f /etc/kansctl/yaml/redis

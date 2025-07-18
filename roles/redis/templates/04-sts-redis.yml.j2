@@ -21,8 +21,7 @@ spec:
         redis: "true"
       containers:
         - name: redis
-          #image: registry.cn-guangzhou.aliyuncs.com/kubecy/redis:6.2.18
-          image: "{{ service.redis_single }}" 
+          image: "{{ service.redis }}" 
           imagePullPolicy: IfNotPresent
           command:
             - "/usr/local/bin/redis-server"

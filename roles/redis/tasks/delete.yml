@@ -1,5 +1,5 @@
 ---
-- name: 删除 redis-single 实例
-  shell: kubectl delete -f /etc/kansctl/yaml/redis-single
+- name: 删除 redis 实例
+  shell: kubectl delete -f /etc/kansctl/yaml/redis
   ignore_errors: yes
 
