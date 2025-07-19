@@ -1,0 +1,23 @@
+---
+- name: 在目录主机创建 /etc/kansctl/yaml/grafana 目录 
+  file:
+    path: /etc/kansctl/yaml/grafana
+    state: directory
+
+- name: 渲染 grafana 所需要的资源 YAML 清单 
+  template:
+    src: "{{ item }}"
+    dest: "/etc/kansctl/yaml/grafana/{{ item | basename | regex_replace('.j2$', '') }}"
+    mode: "0660"
+  loop:
+    - 01-sa-grafana.yml.j2
+    - 02-secret-grafana.yml.j2
+    - 03-pv-grafana.yml.j2
+    - 04-pvc-grafana.yml.j2
+    - 05-cm-grafana.yml.j2
+    - 06-deploy-grafana.yml.j2
+    - 07-svc-grafana.yml.j2
+    - 08-ingress-grafana.yml.j2
+    - 09-pdb-grafana.yml.j2
+- name: 部署 grafana 实例
+  shell: kubectl apply -f /etc/kansctl/yaml/grafana

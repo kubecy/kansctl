@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: moone-grafana-sa
+  namespace: "moone"
+  labels:
+    app.kubernetes.io/instance: grafana
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/version: 11.6.1
+secrets:
+  - name: grafana-admin
+automountServiceAccountToken: false

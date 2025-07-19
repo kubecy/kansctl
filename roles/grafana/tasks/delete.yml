@@ -1,0 +1,4 @@
+---
+- name: 删除 grafana 实例
+  shell: kubectl delete -f /etc/kansctl/yaml/grafana
+  ignore_errors: yes

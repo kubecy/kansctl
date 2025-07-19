@@ -19,6 +19,12 @@
   roles:
     - { role: prometheus, tags: prometheus, when: service.prometheus is defined }
 
+- name: apply grafana
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: grafana, tags: grafana, when: service.grafana is defined }
+
 - name: apply alertmanager
   gather_facts: false
   hosts: "{{ k8s_host }}"
