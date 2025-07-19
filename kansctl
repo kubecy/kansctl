@@ -144,8 +144,8 @@ _kansctl_completions()
     local SERVICE_DIR="./roles"
     local SERVICES
 
-    if [[ -d "./moone" ]]; then
-        ENVS=$(ls ./moone/*.yml 2>/dev/null | xargs -n1 basename | sed 's/\.yml$//')
+    if [[ -d "${ENV_DIR}" ]]; then
+        ENVS=$(ls ${ENV_DIR}/*.yml 2>/dev/null | xargs -n1 basename | sed 's/\.yml$//')
     else
         ENVS="prod dev test"
     fi
