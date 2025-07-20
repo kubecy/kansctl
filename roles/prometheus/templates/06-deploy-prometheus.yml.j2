@@ -6,19 +6,23 @@ metadata:
   namespace: monitoring
   labels:
     app: prometheus
+
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: prometheus
+
   template:
     metadata:
       labels:
         app: prometheus
+    
     spec:
       serviceAccountName: monitor-sa
       nodeSelector:
         monitoring: 'true'
+      
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -29,18 +33,32 @@ spec:
                     values:
                       - prometheus
               topologyKey: "kubernetes.io/hostname"
+      
       securityContext:
         runAsUser: 1000
-        runAsNonRoot: true
+        #runAsNonRoot: true
         fsGroup: 2000
+      
+      initContainers:
+        - name: fix-data-permissions
+          image: "registry.cn-guangzhou.aliyuncs.com/kubecy/monitoring:prometheus_v2.53.4"
+          command: ["sh", "-c", "chown -R 1000:2000 /prometheus && chmod -R g+rwx /prometheus"]
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: prometheus-k8s-db
+              mountPath: /prometheus
+      
       containers:
-        - resources:
+        - name: prometheus
+          resources:
             limits:
               memory: 4Gi
               cpu: 2
             requests:
               memory: 1Gi
               cpu: 500m
+          
           readinessProbe:
             httpGet:
               path: /-/ready
@@ -51,21 +69,15 @@ spec:
             periodSeconds: 5
             successThreshold: 1
             failureThreshold: 3
-          name: prometheus
+          
           ports:
             - name: web
               containerPort: 9090
               protocol: TCP
-          imagePullPolicy: IfNotPresent
-          volumeMounts:
-            - name: config
-              mountPath: /etc/prometheus/config
-            - name: prometheus-k8s-db
-              mountPath: /prometheus
-              subPath: prometheus-db
-            - name: prometheus-rulefiles
-              mountPath: /etc/prometheus/rules/prometheus-rulefiles
+          
           image: 'registry.cn-guangzhou.aliyuncs.com/kubecy/monitoring:prometheus_v2.53.4'
+          imagePullPolicy: IfNotPresent
+          
           args:
             - '--web.console.templates=/etc/prometheus/consoles'
             - '--web.console.libraries=/etc/prometheus/console_libraries'
@@ -75,16 +87,28 @@ spec:
             - '--web.enable-lifecycle'
             - '--storage.tsdb.no-lockfile'
             - '--web.route-prefix=/'
-        - resources:
+          
+          volumeMounts:
+            - name: config
+              mountPath: /etc/prometheus/config
+            - name: prometheus-k8s-db
+              mountPath: /prometheus
+              subPath: prometheus-db
+            - name: prometheus-rulefiles
+              mountPath: /etc/prometheus/rules/prometheus-rulefiles
+
+        - name: config-reloader
+          resources:
             limits:
               cpu: 100m
               memory: 50Mi
             requests:
               cpu: 100m
               memory: 50Mi
-          name: config-reloader
+          
           command:
             - /bin/prometheus-config-reloader
+          
           env:
             - name: POD_NAME
               valueFrom:
@@ -93,29 +117,36 @@ spec:
                   fieldPath: metadata.name
             - name: SHARD
               value: '0'
+          
           ports:
             - name: reloader-web
               containerPort: 8080
               protocol: TCP
-          imagePullPolicy: IfNotPresent
-          volumeMounts:
-            - name: config
-              mountPath: /etc/prometheus/config
-            - name: prometheus-rulefiles
-              mountPath: /etc/prometheus/rules/prometheus-rulefiles
+          
           image: 'registry.cn-guangzhou.aliyuncs.com/kubecy/monitoring:prometheus-config-reloader_v0.55.1'
+          imagePullPolicy: IfNotPresent
+          
           args:
             - '--reload-url=http://localhost:9090/-/reload'
             - '--config-file=/etc/prometheus/config/prometheus.yml'
             - '--watched-dir=/etc/prometheus/rules/prometheus-rulefiles'
             - "--watch-interval=3s"
+          
+          volumeMounts:
+            - name: config
+              mountPath: /etc/prometheus/config
+            - name: prometheus-rulefiles
+              mountPath: /etc/prometheus/rules/prometheus-rulefiles
+
       volumes:
         - name: config
           configMap: 
             name: prometheus-config
+        
         - name: prometheus-rulefiles
           configMap:
             name: prometheus-rulefiles
+        
         - name: prometheus-k8s-db
           persistentVolumeClaim:
             claimName: prometheus-data-pvc
