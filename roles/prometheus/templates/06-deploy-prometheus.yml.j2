@@ -64,11 +64,22 @@ spec:
               path: /-/ready
               port: web
               scheme: HTTP
-            initialDelaySeconds: 180
+            initialDelaySeconds: 60
             timeoutSeconds: 3
             periodSeconds: 5
             successThreshold: 1
             failureThreshold: 3
+          
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: 9090
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 3
+            successThreshold: 1
           
           ports:
             - name: web
