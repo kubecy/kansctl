@@ -1,0 +1,70 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: moone-elasticsearch-headless
+  namespace: moone
+  labels:
+    chart: "elasticsearch"
+    app: "moone-elasticsearch"
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+spec:
+  clusterIP: None 
+  publishNotReadyAddresses: true
+  selector:
+    app: "moone-elasticsearch"
+  ports:
+  - name: http
+    port: 9200
+  - name: transport
+    port: 9300
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: moone-elasticsearch-outside
+  namespace: moone
+  labels:
+    release: "moone-es"
+    chart: "elasticsearch"
+    app: "moone-elasticsearch"
+  annotations: {}
+spec:
+  type: NodePort
+  selector:
+    chart: "elasticsearch"
+    app: "moone-elasticsearch"
+  publishNotReadyAddresses: false
+  ports:
+    - name: http
+      protocol: TCP
+      port: 9200
+      targetPort: 9200
+      nodePort: 30920  
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: moone-elasticsearch
+  namespace: moone
+  labels:
+    release: "moone-es"
+    chart: "elasticsearch"
+    app: "moone-elasticsearch"
+  annotations:
+    {}
+spec:
+  type: ClusterIP
+  selector:
+    chart: "elasticsearch"
+    app: "moone-elasticsearch"
+  publishNotReadyAddresses: false
+  ports:
+  - name: http
+    protocol: TCP
+    port: 9200
+  - name: transport
+    protocol: TCP
+    port: 9300

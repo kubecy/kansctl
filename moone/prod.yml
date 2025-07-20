@@ -19,10 +19,13 @@ storage:
 
 ## 服务镜像
 service:
+
+  ## 数据库
   redis: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/redis:6.2.18"
   postgresql: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/postgresql:v17.5-alpine3.22"
   mysql: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/mysql:v8.0.36"
   mysqld-exporter: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/mysqld-exporter:v0.17.2"
+  elasticsearch: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/elasticsearch:v7.17.3"
 
   ## 初始化容器镜像
   os-shell: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/os-shell:v12-debian-12-r43"

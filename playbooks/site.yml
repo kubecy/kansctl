@@ -1,15 +1,4 @@
 ---
-- name: apply redis
-  gather_facts: false
-  hosts: "{{ k8s_host }}"
-  roles:
-    - { role: redis, tags: redis, when: service.redis is defined }
-
-- name: apply postgresql
-  gather_facts: false
-  hosts: "{{ k8s_host }}"
-  roles:
-    - { role: postgresql, tags: postgresql, when: service.postgresql is defined }
 
 
 ## 监控告警
@@ -45,6 +34,36 @@
   hosts: "{{ k8s_host }}"
   roles:
     - { role: mysql, tags: mysql, when: service.mysql is defined }
+
+
+
+## 数据库
+- name: apply redis
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: redis, tags: redis, when: service.redis is defined }
+
+- name: apply postgresql
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: postgresql, tags: postgresql, when: service.postgresql is defined }
+
+- name: apply mysql
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: mysql, tags: mysql, when: service.mysql is defined }
+
+- name: apply elasticsearch
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: elasticsearch, tags: elasticsearch, when: service.elasticsearch is defined }
+
+
+
 
 #- name: apply prometheus-config-reloader 
 #  gather_facts: false

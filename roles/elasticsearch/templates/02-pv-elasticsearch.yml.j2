@@ -1,0 +1,99 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: moone-elasticsearch-pv-data-0
+  namespace: moone #{{ namespace  }}
+  labels:
+    app/component: elasticsearch
+    app/elasticsearch-role: elasticsearch
+  annotations:
+    app/component: elasticsearch
+    app/elasticsearch-role: elasticsearch
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: elasticsearch-storage 
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/moone/moone-elasticsearch-pv-data-0
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname    ## 根据节点
+              operator: In
+              values: ["kubecy-worker24"]
+#  mountOptions:
+#    - noatime
+#    - nodiratime
+#    - nobarrier
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: moone-elasticsearch-pv-data-1
+  namespace: moone #{{ namespace  }}
+  labels:
+    app/component: elasticsearch
+    app/elasticsearch-role: elasticsearch
+  annotations:
+    app/component: elasticsearch
+    app/elasticsearch-role: elasticsearch
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: elasticsearch-storage 
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/moone/moone-elasticsearch-pv-data-1
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values: ["kubecy-worker25"]
+#  mountOptions:
+#    - noatime
+#    - nodiratime
+#    - nobarrier
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: moone-elasticsearch-pv-data-2
+  namespace: moone #{{ namespace  }}
+  labels:
+    app/component: elasticsearch
+    app/elasticsearch-role: elasticsearch
+  annotations:
+    app/component: elasticsearch
+    app/elasticsearch-role: elasticsearch
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: elasticsearch-storage 
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/moone/moone-elasticsearch-pv-data-2
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values: ["kubecy-worker26"]
+#  mountOptions:
+#    - noatime
+#    - nodiratime
+#    - nobarrier

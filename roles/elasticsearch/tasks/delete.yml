@@ -1,0 +1,4 @@
+---
+- name: 删除 elasticsearch 实例
+  shell: kubectl delete -f /etc/kansctl/yaml/elasticsearch
+  ignore_errors: yes
