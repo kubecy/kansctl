@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: moone-rabbitmq
+  namespace: "moone"
+  labels:
+    app.kubernetes.io/instance: moone-rabbitmq
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/version: 3.13.7
+    helm.sh/chart: rabbitmq-14.7.0
+automountServiceAccountToken: false
+secrets:
+  - name: moone-rabbitmq

@@ -1,0 +1,23 @@
+---
+- name: 在目录主机创建 /etc/kansctl/yaml/rabbitmq 目录 
+  file:
+    path: /etc/kansctl/yaml/rabbitmq
+    state: directory
+
+- name: 渲染 rabbitmq 所需要的资源 YAML 清单 
+  template:
+    src: "{{ item }}"
+    dest: "/etc/kansctl/yaml/rabbitmq/{{ item | basename | regex_replace('.j2$', '') }}"
+    mode: "0660"
+  loop:
+    - 01-secret-rabbitmq.yml.j2
+    - 02-sa-rabbitmq.yml.j2
+    - 03-role-rabbitmq.yml.j2
+    - 04-rolebinding-rabbitmq.yml.j2
+    - 05-sc-rabbitmq.yml.j2
+    - 06-pv-rabbitmq.yml.j2
+    - 07-sts-rabbitmq.yml.j2
+    - 08-svc-rabbitmq.yml.j2
+
+- name: 部署 rabbitmq 实例
+  shell: kubectl apply -f /etc/kansctl/yaml/rabbitmq

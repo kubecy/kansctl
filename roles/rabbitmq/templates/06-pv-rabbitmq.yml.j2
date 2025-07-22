@@ -1,0 +1,87 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: moone-rabbitmq-pv-data-0
+  namespace: moone #{{ namespace  }}
+  labels:
+    app/component: rabbitmq
+    app/rabbitmq-role: rabbitmq
+  annotations:
+    app/component: rabbitmq
+    app/rabbitmq-role: rabbitmq
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: rabbitmq-storage 
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/moone/moone-rabbitmq-pv-data-0
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname    ## 根据节点
+              operator: In
+              values: ["kubecy-worker24"]
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: moone-rabbitmq-pv-data-1
+  namespace: moone #{{ namespace  }}
+  labels:
+    app/component: rabbitmq
+    app/rabbitmq-role: rabbitmq
+  annotations:
+    app/component: rabbitmq
+    app/rabbitmq-role: rabbitmq
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: rabbitmq-storage 
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/moone/moone-rabbitmq-pv-data-1
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values: ["kubecy-worker25"]
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: moone-rabbitmq-pv-data-2
+  namespace: moone #{{ namespace  }}
+  labels:
+    app/component: rabbitmq
+    app/rabbitmq-role: rabbitmq
+  annotations:
+    app/component: rabbitmq
+    app/rabbitmq-role: rabbitmq
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: rabbitmq-storage 
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/moone/moone-rabbitmq-pv-data-2
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values: ["kubecy-worker26"]

@@ -26,17 +26,6 @@
   roles:
     - { role: node-exporter, tags: node-exporter, when: service.node_exporter is defined }
 
-
-
-
-- name: apply mysql
-  gather_facts: false
-  hosts: "{{ k8s_host }}"
-  roles:
-    - { role: mysql, tags: mysql, when: service.mysql is defined }
-
-
-
 ## 数据库
 - name: apply redis
   gather_facts: false
@@ -63,6 +52,14 @@
     - { role: elasticsearch, tags: elasticsearch, when: service.elasticsearch is defined }
 
 
+
+## 消息队列
+
+- name: apply rabbitmq
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: rabbitmq, tags: rabbitmq, when: service.rabbitmq is defined }
 
 
 #- name: apply prometheus-config-reloader 
