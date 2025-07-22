@@ -1,0 +1,19 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: moone-rabbitmq-ui
+  namespace: moone
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: rabbitmq.kubecy.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: moone-rabbitmq
+                port:
+                  name: http-stats
