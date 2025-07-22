@@ -193,7 +193,7 @@ spec:
             - name: RABBITMQ_SECURE_PASSWORD
               value: "yes"
             - name: RABBITMQ_USERNAME
-              value: "user"
+              value: "admin"
             - name: RABBITMQ_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -223,7 +223,7 @@ spec:
               command:
                 - sh
                 - -ec
-                - curl -f --user user:$RABBITMQ_PASSWORD 127.0.0.1:15672/api/health/checks/virtual-hosts
+                - curl -f --user admin:$RABBITMQ_PASSWORD 127.0.0.1:15672/api/health/checks/virtual-hosts
           readinessProbe:
             failureThreshold: 3
             initialDelaySeconds: 10
@@ -234,7 +234,7 @@ spec:
               command:
                 - sh
                 - -ec
-                - curl -f --user user:$RABBITMQ_PASSWORD 127.0.0.1:15672/api/health/checks/local-alarms
+                - curl -f --user admin:$RABBITMQ_PASSWORD 127.0.0.1:15672/api/health/checks/local-alarms
           resources:
             limits:
               cpu: 1
@@ -271,30 +271,11 @@ spec:
         - name: configuration
           projected:
             sources:
-              - secret:
+              - configMap: 
                   name: moone-rabbitmq-config
-#  volumeClaimTemplates:
-#    - apiVersion: v1
-#      kind: PersistentVolumeClaim
-#      metadata:
-#        name: data
-#        labels:
-#          app.kubernetes.io/instance: moone-rabbitmq
-#          app.kubernetes.io/name: rabbitmq
-#      spec:
-#        accessModes:
-#            - "ReadWriteOnce"
-#        resources:
-#          requests:
-#            storage: "5Gi"
-#
-#
   volumeClaimTemplates:
   - metadata:
       name: data
-      #labels:
-      #  app.kubernetes.io/instance: moone-rabbitmq
-      #  app.kubernetes.io/name: rabbitmq
     spec:
       accessModes:
       - ReadWriteOnce
