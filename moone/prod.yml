@@ -30,6 +30,7 @@ service:
   ## 初始化容器镜像
   kubecy_shell: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/os-shell:v12-debian-12-r43"
   bitnami-shell: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/bitnami-shell:v11-debian-11-r118"
+ 
 
 
   ## 监控告警
@@ -39,7 +40,7 @@ service:
   node_exporter: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/node-exporter:v1.9.1"
   prometheus_config_reloader: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/prometheus-config-reloader:v0.55.1"
   prometheus_webhook_dingtalk: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/prometheus-webhook-dingtalk:v2.1.0"
-
+  kube_state_metrics: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/kube-state-metrics:2.16.0-debian-12-r3"
 
   ## 消息队列
   rabbitmq: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/rabbitmq:v3.13.7-debian-12-r2"

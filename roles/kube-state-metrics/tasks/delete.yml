@@ -1,0 +1,3 @@
+me: 删除 kube-state-metrics 实例
+  shell: kubectl delete -f /etc/kansctl/yaml/kube-state-metrics
+  ignore_errors: yes

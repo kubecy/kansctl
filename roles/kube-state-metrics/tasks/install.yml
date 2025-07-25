@@ -1,0 +1,17 @@
+---
+- name: 在目录主机创建 /etc/kansctl/yaml/kube-state-metrics 目录
+  file:
+    path: /etc/kansctl/yaml/kube-state-metrics
+    state: directory
+
+- name: 渲染kube-state-metrics YAML 模板
+  template:
+    src: "{{ item }}"
+    dest: "/etc/kansctl/yaml/kube-state-metrics/{{ item | basename | regex_replace('.j2$', '') }}"
+    mode: "0660"
+  loop:
+    - 01-deploy-kube-state-metrics.yml.j2
+    - 02-svc-kube-state-metrics.yml.j2
+
+- name: 部署kube-state-metrics实例
+  shell: kubectl apply -f /etc/kansctl/yaml/kube-state-metrics

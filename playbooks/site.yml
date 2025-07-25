@@ -26,6 +26,13 @@
   roles:
     - { role: node-exporter, tags: node-exporter, when: service.node_exporter is defined }
 
+
+- name: apply kube-state-metrics
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: kube-state-metrics, tags: kube-state-metrics, when: service.kube_state_metrics is defined }
+
 ## 数据库
 - name: apply redis
   gather_facts: false
