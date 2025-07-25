@@ -51,7 +51,7 @@ function usage() {
 
 选项参数 (options):
   -e <环境>                          指定部署环境，会加载对应的 <环境>.yml 配置文件
-  -t <服务>                          指定部署服务，对应 roles 目录下的服务名
+  -t <服务>                          指定部署服务，对应 roles 目录下的服务名 (逗号分隔多个服务)
 
 环境 (env):
   prod                               moone 生产环境
@@ -133,15 +133,16 @@ function delete() {
 }
 
 function setup_tab() {
-cat > ~/.kansctl_completion.sh <<'EOF'
+cat > ~/.kansctl_completion.sh << 'EOF'
 _kansctl_completions()
 {
     local cur prev words cword
     _init_completion || return
 
     local CMDS="list apply delete setup"
-    local ENVS="prod dev test"
+    local ENV_DIR="./moone"
     local SERVICE_DIR="./roles"
+    local ENVS
     local SERVICES
 
     if [[ -d "${ENV_DIR}" ]]; then
@@ -149,6 +150,8 @@ _kansctl_completions()
     else
         ENVS="prod dev test"
     fi
+
+
 
     if [[ -d "$SERVICE_DIR" ]]; then
         SERVICES=$(find "$SERVICE_DIR" -mindepth 1 -maxdepth 1 -type d -printf "%f\n")
