@@ -20,7 +20,7 @@ spec:
         - operator: Exists
           effect: NoSchedule
       containers:
-      - image: registry.cn-guangzhou.aliyuncs.com/kubecy/monitoring:node-exporter_v1.9.1
+      - image: "{{ service.node_exporter }}"
         name: node-exporter
         ports:
         - name: node-exporter
