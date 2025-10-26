@@ -73,7 +73,7 @@ spec:
               mountPath: /etc/alertmanager/config/templates
             - name: alertmanager-main-db
               mountPath: /alertmanager
-          image: 'registry.cn-guangzhou.aliyuncs.com/kubecy/monitoring:alertmanager_v0.27.0'
+          image: "{{ service.alertmanager }}" 
           args:
             - '--config.file=/etc/alertmanager/config/alertmanager.yml'
             - '--storage.path=/alertmanager'
@@ -115,7 +115,7 @@ spec:
             - name: tmpl-volume
               readOnly: true
               mountPath: /etc/alertmanager/config/templates
-          image: 'registry.cn-guangzhou.aliyuncs.com/kubecy/monitoring:prometheus-config-reloader_v0.55.1'
+          image: "{{ service.prometheus_config_reloader }}" 
           args:
             - '--reload-url=http://localhost:9093/-/reload'
             - '--watched-dir=/etc/alertmanager/config'
