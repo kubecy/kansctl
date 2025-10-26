@@ -41,7 +41,7 @@ spec:
       
       initContainers:
         - name: fix-data-permissions
-          image: "registry.cn-guangzhou.aliyuncs.com/kubecy/monitoring:prometheus_v2.53.4"
+          image: "{{ service.prometheus }}"
           command: ["sh", "-c", "chown -R 1000:2000 /prometheus && chmod -R g+rwx /prometheus"]
           securityContext:
             runAsUser: 0
@@ -86,7 +86,7 @@ spec:
               containerPort: 9090
               protocol: TCP
           
-          image: 'registry.cn-guangzhou.aliyuncs.com/kubecy/monitoring:prometheus_v2.53.4'
+          image: "{{ service.prometheus }}"
           imagePullPolicy: IfNotPresent
           
           args:
@@ -134,7 +134,7 @@ spec:
               containerPort: 8080
               protocol: TCP
           
-          image: 'registry.cn-guangzhou.aliyuncs.com/kubecy/monitoring:prometheus-config-reloader_v0.55.1'
+          image: "{{ service.prometheus_config_reloader }}"
           imagePullPolicy: IfNotPresent
           
           args:
