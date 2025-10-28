@@ -1,0 +1,19 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: logging-kibana-ingress
+  namespace: logging
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: kibana.kubecy.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: logging-kibana
+                port:
+                  number: 5601

@@ -1,15 +1,15 @@
-##生产环境 
+##K8s 附加组件统一清单 
 
 k8s_host: "moone_prod"
 
 docker_repo:
   host: "registry.cn-guangzhou.aliyuncs.com"
   image_project: "kansctl"
-  image_name: "redis"
-  image_version: "6.2.18"
+  image_name: "elasticsearch"
+  image_version: "v7.17.3"
 
 
-namespace: "moone"
+namespace: "addons"
 
 
 storage:
@@ -19,6 +19,20 @@ storage:
 
 ## 服务镜像
 service:
+  ## 日志采集
+  ### eflk: Elasticsearch + Filebeat + Logstash  + Kibana
+  elasticsearch: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/elasticsearch:v7.17.3"
+  filebeat: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/filebeat:v7.17.3"
+  logstash: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/logstash:v7.17.3"
+  kibana: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/kibana:v7.17.3"
+
+
+
+
+
+  
+
+
 
   ## 数据库
   redis: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/redis:6.2.18"

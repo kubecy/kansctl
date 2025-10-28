@@ -1,0 +1,99 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: logging-elasticsearch-pv-data-0
+  namespace: logging #{{ namespace  }}
+  labels:
+    app/component: logging-elasticsearch
+    app/elasticsearch-role: logging-elasticsearch
+  annotations:
+    app/component: logging-elasticsearch
+    app/elasticsearch-role: logging-elasticsearch
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: logging-elasticsearch-storage 
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/moone/logging-elasticsearch-pv-data-0
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname    ## 根据节点
+              operator: In
+              values: ["moone-worker-31"]
+#  mountOptions:
+#    - noatime
+#    - nodiratime
+#    - nobarrier
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: logging-elasticsearch-pv-data-1
+  namespace: logging #{{ namespace  }}
+  labels:
+    app/component: logging-elasticsearch
+    app/elasticsearch-role: logging-elasticsearch
+  annotations:
+    app/component: logging-elasticsearch
+    app/elasticsearch-role: logging-elasticsearch
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: logging-elasticsearch-storage 
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/moone/logging-elasticsearch-pv-data-1
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values: ["moone-worker-32"]
+#  mountOptions:
+#    - noatime
+#    - nodiratime
+#    - nobarrier
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: logging-elasticsearch-pv-data-2
+  namespace: logging #{{ namespace  }}
+  labels:
+    app/component: logging-elasticsearch
+    app/elasticsearch-role: logging-elasticsearch
+  annotations:
+    app/component: logging-elasticsearch
+    app/elasticsearch-role: logging-elasticsearch
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: logging-elasticsearch-storage 
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/moone/logging-elasticsearch-pv-data-2
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values: ["moone-worker-33"]
+#  mountOptions:
+#    - noatime
+#    - nodiratime
+#    - nobarrier
