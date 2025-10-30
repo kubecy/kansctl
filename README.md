@@ -25,6 +25,7 @@
 root@kubecy-master21 /root:~ # dnf -y install git ansible
 root@kubecy-master21 /root:~ # mkdir .kubecy
 root@kubecy-master21 /root:~ # cd .kubecy/
+root@kubecy-master21 /root:~ # ./kansctl setup tab ##设置 kansctl tab功能
 root@kubecy-master21 /root/.kubecy:~ # git clone https://github.com/kubecy/kansctl.git
 root@kubecy-master21 /root/.kubecy:~ # cd kansctl/
 ```
