@@ -27,7 +27,7 @@ root@kubecy-master21 /root:~ # mkdir .kubecy
 root@kubecy-master21 /root:~ # cd .kubecy/
 root@kubecy-master21 /root/.kubecy:~ # git clone https://github.com/kubecy/kansctl.git
 root@kubecy-master21 /root/.kubecy:~ # cd kansctl/
-root@kubecy-master21 /root:/.kubecy/kansctl:~ # ./kansctl setup tab ##设置 kansctl tab功能
+root@kubecy-master21 /root/.kubecy/kansctl:~ # ./kansctl setup tab ##设置 kansctl tab功能
 ```
 
 # 使用
