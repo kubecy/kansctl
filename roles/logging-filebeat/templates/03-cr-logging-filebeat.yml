@@ -1,0 +1,83 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: logging-filebeat-cluster-role
+  labels:
+    app: "logging-filebeat"
+    chart: "filebeat-7.17.3"
+    release: "logging"
+rules:
+  - apiGroups:
+    - ""
+    resources:
+    - namespaces
+    - nodes
+    - pods
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - apps
+    resources:
+    - replicasets
+    verbs:
+    - get
+    - list
+    - watch
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: logging-filebeat-cluster-role-binding
+  labels:
+    app: "logging-filebeat"
+    chart: "filebeat-7.17.3"
+    release: "logging"
+roleRef:
+  kind: ClusterRole
+  name: logging-filebeat-cluster-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: logging-filebeat
+  namespace: logging
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: logging-filebeat-role
+  namespace: logging
+  labels:
+    app: "logging-filebeat"
+rules:
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs: ["get", "create", "update"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: logging-filebeat-role-binding
+  namespace: logging
+  labels:
+    app: "logging-filebeat"
+    chart: "filebeat-7.17.3"
+    release: "logging"
+roleRef:
+  kind: Role
+  name: logging-filebeat-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: logging-filebeat
+  namespace: logging
+
+---
+

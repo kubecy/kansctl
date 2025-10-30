@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: logging-filebeat
+  namespace: logging
+  annotations:
+  labels:
+    app: "logging-filebeat"
+    chart: "filebeat-7.17.3"
+    release: "logging"
