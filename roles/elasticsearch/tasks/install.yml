@@ -1,5 +1,5 @@
 ---
-- name: 在目录主机创建 /etc/kansctl/yaml/elasticsearch 目录 
+- name: 在目标主机创建 /etc/kansctl/yaml/elasticsearch 目录 
   file:
     path: /etc/kansctl/yaml/elasticsearch
     state: directory

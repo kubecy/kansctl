@@ -1,0 +1,4 @@
+---
+- name: 删除 logging-elasticsearch 实例
+  shell: kubectl delete -f /etc/kansctl/yaml/logging-elasticsearch
+  ignore_errors: yes

@@ -60,11 +60,11 @@ spec:
         securityContext:
           runAsUser: 0
           privileged: true
-        image: "registry.cn-guangzhou.aliyuncs.com/kansctl/elasticsearch:v7.17.3"
+        image: "{{ service.elasticsearch }}"
         imagePullPolicy: "IfNotPresent"
         command: ["sysctl", "-w", "vm.max_map_count=262144"]
       - name: fix-data-permissions  # 新增权限修复容器
-        image: "registry.cn-guangzhou.aliyuncs.com/kansctl/elasticsearch:v7.17.3"
+        image: "{{ service.elasticsearch }}" 
         command: ["sh", "-c", "chown -R 1000:1000 /usr/share/elasticsearch/data"]
         securityContext:
           runAsUser: 0  # 需要 root 权限
@@ -73,7 +73,7 @@ spec:
           mountPath: /usr/share/elasticsearch/data
 
       - name: increase-fd-ulimit
-        image: "registry.cn-guangzhou.aliyuncs.com/kansctl/elasticsearch:v7.17.3"
+        image: "{{ service.elasticsearch }}" 
         command: ["sh", "-c", "ulimit -n 65536"]
         securityContext:
           runAsUser: 0
@@ -86,7 +86,7 @@ spec:
             - ALL
           runAsNonRoot: true
           runAsUser: 1000
-        image: "registry.cn-guangzhou.aliyuncs.com/kansctl/elasticsearch:v7.17.3"
+        image: "{{ service.elasticsearch }}" 
         imagePullPolicy: "IfNotPresent"
         readinessProbe:
           exec:

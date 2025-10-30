@@ -33,6 +33,21 @@
   roles:
     - { role: kube-state-metrics, tags: kube-state-metrics, when: service.kube_state_metrics is defined }
 
+  ## 日志采集
+  ### eflk: Elasticsearch + Filebeat + Logstash  + Kibana
+- name: apply logging-elasticsearch
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: logging-elasticsearch, tags: logging-elasticsearch, when: service.elasticsearch is defined }
+
+
+- name: apply logging-kibana
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: logging-kibana, tags: logging-kibana, when: service.kibana is defined }
+
 ## 数据库
 - name: apply redis
   gather_facts: false

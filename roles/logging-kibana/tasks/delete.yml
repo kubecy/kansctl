@@ -1,0 +1,4 @@
+---
+- name: 删除 logging-kibana 实例
+  shell: kubectl delete -f /etc/kansctl/yaml/logging-kibana
+  ignore_errors: yes

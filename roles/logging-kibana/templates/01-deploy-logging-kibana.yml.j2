@@ -32,7 +32,7 @@ spec:
             - ALL
           runAsNonRoot: true
           runAsUser: 1000
-        image: "registry.cn-guangzhou.aliyuncs.com/kansctl/kibana:v7.17.3"
+        image: "{{ service.kibana }}"
         imagePullPolicy: "IfNotPresent"
         env:
           - name: ELASTICSEARCH_HOSTS

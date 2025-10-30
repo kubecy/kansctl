@@ -18,7 +18,7 @@ spec:
   storageClassName: logging-elasticsearch-storage 
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/moone/logging-elasticsearch-pv-data-0
+    path: /mnt/logging/logging-elasticsearch-pv-data-0
     type: DirectoryOrCreate
   nodeAffinity:
     required:
@@ -27,10 +27,6 @@ spec:
             - key: kubernetes.io/hostname    ## 根据节点
               operator: In
               values: ["moone-worker-31"]
-#  mountOptions:
-#    - noatime
-#    - nodiratime
-#    - nobarrier
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -51,7 +47,7 @@ spec:
   storageClassName: logging-elasticsearch-storage 
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/moone/logging-elasticsearch-pv-data-1
+    path: /mnt/logging/logging-elasticsearch-pv-data-1
     type: DirectoryOrCreate
   nodeAffinity:
     required:
@@ -60,10 +56,6 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values: ["moone-worker-32"]
-#  mountOptions:
-#    - noatime
-#    - nodiratime
-#    - nobarrier
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -84,7 +76,7 @@ spec:
   storageClassName: logging-elasticsearch-storage 
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/moone/logging-elasticsearch-pv-data-2
+    path: /mnt/logging/logging-elasticsearch-pv-data-2
     type: DirectoryOrCreate
   nodeAffinity:
     required:
@@ -93,7 +85,3 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values: ["moone-worker-33"]
-#  mountOptions:
-#    - noatime
-#    - nodiratime
-#    - nobarrier

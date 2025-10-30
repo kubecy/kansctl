@@ -1,0 +1,18 @@
+---
+- name: 在目标主机创建 /etc/kansctl/yaml/logging-elasticsearch 目录 
+  file:
+    path: /etc/kansctl/yaml/logging-elasticsearch
+    state: directory
+
+- name: 渲染 logging-elasticsearch 所需要的资源 YAML 清单 
+  template:
+    src: "{{ item }}"
+    dest: "/etc/kansctl/yaml/logging-elasticsearch/{{ item | basename | regex_replace('.j2$', '') }}"
+    mode: "0660"
+  loop:
+    - 01-sc-logging-elasticsearch.yml.j2
+    - 02-pv-logging-elasticsearch.yml.j2
+    - 03-sts-logging-elasticsearch.yml.j2
+    - 04-svc-logging-elasticsearch.yml.j2
+- name: 部署 logging-elasticsearch 实例
+  shell: kubectl apply -f /etc/kansctl/yaml/logging-elasticsearch

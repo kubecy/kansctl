@@ -1,0 +1,17 @@
+---
+- name: 在目标主机创建 /etc/kansctl/yaml/logging-kibana 目录 
+  file:
+    path: /etc/kansctl/yaml/logging-kibana
+    state: directory
+
+- name: 渲染 logging-kibana 所需要的资源 YAML 清单 
+  template:
+    src: "{{ item }}"
+    dest: "/etc/kansctl/yaml/logging-kibana/{{ item | basename | regex_replace('.j2$', '') }}"
+    mode: "0660"
+  loop:
+    - 01-deploy-logging-kibana.yml.j2
+    - 02-svc-logging-kibana.yml.j2
+    - 03-ingress-logging-kibana.yml.j2
+- name: 部署 logging-kibana 实例
+  shell: kubectl apply -f /etc/kansctl/yaml/logging-kibana
