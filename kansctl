@@ -209,6 +209,7 @@ EOF
   logger info  "Tab 补全脚本已写入   ~/.kansctl_completion.sh"
   logger debug "请执行命令立即生效：source ~/.kansctl_completion.sh"
   echo " "
+  exec bash
 }
 
 
