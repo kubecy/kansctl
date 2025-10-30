@@ -10,7 +10,7 @@
 ---
 
 # kansctl 是什么
-**`kansctl`** 是一款基于 **`Shell + Ansible`** 构建的中间件自动化部署与交付工具，专为 Kubernetes 场景设计。该工具旨在简化 **中间件环境交付** 及 **多环境多服务部署流程**，具备如下特点：
+**`kansctl`** 是一款基于 **`Shell + Ansible`** 构建的中间件自动化部署与交付工具，专为 Kubernetes 场景设计。该工具旨在简化 **中间件服务交付** 及 **多环境多服务部署流程**，具备如下特点：
 <table> <thead> <tr> <th align="left" width="200px">🌟 功能</th> <th align="left">✨ 描述</th> </tr> </thead> <tbody>
 <tr> <td>🧩 服务粒度控制</td> <td> 按服务维度精细控制中间件部署与卸载，例如支持独立部署 Redis、MySQL、Elasticsearch、Prometheus 等组件。</td> </tr>
 <tr> <td>🏗️ 多环境支持</td> <td> 支持按环境变量组织部署逻辑（如 <code>dev</code>、<code>test</code>、<code>prod</code>），可加载对应配置文件，灵活适配多套部署体系，提升交付效率。</td> </tr>
@@ -25,9 +25,9 @@
 root@kubecy-master21 /root:~ # dnf -y install git ansible
 root@kubecy-master21 /root:~ # mkdir .kubecy
 root@kubecy-master21 /root:~ # cd .kubecy/
-root@kubecy-master21 /root:~ # ./kansctl setup tab ##设置 kansctl tab功能
 root@kubecy-master21 /root/.kubecy:~ # git clone https://github.com/kubecy/kansctl.git
 root@kubecy-master21 /root/.kubecy:~ # cd kansctl/
+root@kubecy-master21 /root:/.kubecy/kansctl:~ # ./kansctl setup tab ##设置 kansctl tab功能
 ```
 
 # 使用
