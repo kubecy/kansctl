@@ -1,0 +1,24 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus-alert-center
+  namespace: monitoring
+  labels:
+    app: prometheus-alert-center
+      #annotations:
+      #  nginx.ingress.kubernetes.io/rewrite-target: /          
+      #  nginx.ingress.kubernetes.io/ssl-redirect: "false"       
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: alert.kubecy.com                          
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prometheus-alert-center
+            port:
+              number: 8080
