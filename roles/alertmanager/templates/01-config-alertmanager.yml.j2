@@ -9,16 +9,34 @@ data:
       resolve_timeout: 2m
 
     route:
-      group_by: ['job', 'alertname']
+      group_by: ['job','alertname']
       group_wait: 10s
       group_interval: 15s
-      repeat_interval: 3h
-      receiver: "dingtalk"
+      repeat_interval: 30m
+      receiver: "Default"
+      routes:
+        - match:
+            #severity: very-critical
+          receiver: "WeCom-webhook"
+        #- match:
+        #    severity: critical
+        #  receiver: wechat
+        #- match:
+        #    severity: weixin-notice
+        #  receiver: wechat-new
+
 
     templates:
       - "./templates/*.tmpl"
 
     receivers:
+      - name: Default
+
+      - name: "WeCom-webhook"
+        webhook_configs:
+          - url: "http://prometheus-alert-center.monitoring:8080/prometheusalert?type=wx&tpl=prometheus-wx&wxurl=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=69a64baa-718b-4d6f-bf66-25234f0c0878"
+            send_resolved: true
+
       - name: 'dingtalk'
         webhook_configs:
           - url: http://prometheus-webhook-dingtalk:8060/dingtalk/webhook1/send
@@ -29,6 +47,8 @@ data:
           severity: critical
         target_match_re:
           severity: warning|info
+        equal: ['job', 'alertname']
+
       - source_match:
           severity: warning
         target_match_re:

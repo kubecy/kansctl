@@ -73,6 +73,9 @@ spec:
               mountPath: /etc/alertmanager/config/templates
             - name: alertmanager-main-db
               mountPath: /alertmanager
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
           image: "{{ service.alertmanager }}" 
           args:
             - '--config.file=/etc/alertmanager/config/alertmanager.yml'
@@ -115,6 +118,9 @@ spec:
             - name: tmpl-volume
               readOnly: true
               mountPath: /etc/alertmanager/config/templates
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
           image: "{{ service.prometheus_config_reloader }}" 
           args:
             - '--reload-url=http://localhost:9093/-/reload'
@@ -140,5 +146,8 @@ spec:
             name: alertmanager-tmpl
         - name: alertmanager-main-db
           emptyDir: {}
+        - name: localtime
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
   serviceName: alertmanager-svc
 

@@ -100,6 +100,9 @@ spec:
             - '--web.route-prefix=/'
           
           volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
             - name: config
               mountPath: /etc/prometheus/config
             - name: prometheus-k8s-db
@@ -144,12 +147,18 @@ spec:
             - "--watch-interval=3s"
           
           volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
             - name: config
               mountPath: /etc/prometheus/config
             - name: prometheus-rulefiles
               mountPath: /etc/prometheus/rules/prometheus-rulefiles
 
       volumes:
+        - name: localtime
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
         - name: config
           configMap: 
             name: prometheus-config
