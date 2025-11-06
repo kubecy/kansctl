@@ -114,7 +114,7 @@ function delete() {
     logger debug "将在 3 秒后开始删除 [$ENV_NAME] 环境中的 [$SERVICE_NAME] 服务:"
 
     for i in {3..1}; do
-      echo -ne "\r剩余时间：\033[33m${i}\033[0m 秒，请按 Ctrl+C 取消..."
+      echo -ne "\r剩余时间：\033[33m${i}\033[0m 秒，请按 Ctrl+C 取消...\n"
       sleep 1
     done
 
