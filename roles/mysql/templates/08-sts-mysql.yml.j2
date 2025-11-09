@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: moone-mysql-prod
+  name: mysql-prod
   namespace: moone
   labels:
     app.kubernetes.io/name: mysql
@@ -46,7 +46,7 @@ spec:
                     app.kubernetes.io/instance: mysql
                 topologyKey: kubernetes.io/hostname
       nodeSelector:
-        kubernetes.io/hostname: kubecy-worker26  ## 
+        mysql: "true"
       #securityContext:
       #  fsGroup: 1001
       terminationGracePeriodSeconds: 30
