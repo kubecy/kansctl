@@ -15,7 +15,7 @@ data:
     - name: node-exporter.rules
       rules: 
       - alert: "CPU 使用率大于 60%"
-        expr: (1 - avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m]))) * 100 > 60
+        expr: (1 - avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[1m]))) * 100 > 60
         for: 10s  ## 指标连续 30 秒超过阈值，Pending → Firing
         labels:
           severity: warning

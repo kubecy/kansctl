@@ -1,0 +1,83 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+  namespace: devops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      serviceAccountName: jenkins-sa
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: jenkins
+          image: registry.cn-guangzhou.aliyuncs.com/kansctl/jenkins:2.535-jdk21
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: web
+              containerPort: 8080
+            - name: agent
+              containerPort: 50000
+          env:
+            - name: TZ
+              value: "Asia/Shanghai"
+            - name: JENKINS_UC
+              value: "https://mirrors.huaweicloud.com/jenkins"
+            - name: JENKINS_UC_DOWNLOAD
+              value: "https://mirrors.huaweicloud.com/jenkins"
+            - name: JAVA_OPTS
+              value: >-
+                -Djava.awt.headless=true
+                -Xms2g
+                -Xmx4g
+                -XX:MetaspaceSize=256m
+                -XX:MaxMetaspaceSize=512m
+                -Dhudson.slaves.NodeProvisioner.initialDelay=0
+                -Dhudson.slaves.NodeProvisioner.MARGIN=50
+                -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85
+                -Duser.timezone=Asia/Shanghai
+                -Dorg.eclipse.jetty.util.log.LOGGER_TIMEZONE=Asia/Shanghai
+          volumeMounts:
+            - name: jenkins-data
+              mountPath: /var/jenkins_home
+                #- name: update-center-config
+                #  mountPath: /var/jenkins_home/hudson.model.UpdateCenter.xml
+                #  subPath: hudson.model.UpdateCenter.xml
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 120
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+      volumes:
+        #- name: update-center-config
+        #  configMap:
+        #    name: jenkins-update-center
+
+        - name: jenkins-data
+          persistentVolumeClaim:
+            claimName: jenkins-pvc

@@ -5,6 +5,7 @@ metadata:
   name: postgres
   namespace: {{ namespace }} 
 spec:
+  clusterIP: None
   selector:
     app: postgres
   ports:

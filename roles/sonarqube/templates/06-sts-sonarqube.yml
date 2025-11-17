@@ -1,0 +1,213 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sonar-sonarqube
+  namespace: devops
+  labels:
+    app: sonarqube
+    release: sonar
+    heritage: Helm
+    app.kubernetes.io/name: sonar
+    app.kubernetes.io/instance: sonar
+    app.kubernetes.io/part-of: sonarqube
+    app.kubernetes.io/component: sonar-sonarqube
+    app.kubernetes.io/version: "24.12.0.100206-community"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  serviceName: sonar-sonarqube
+  selector:
+    matchLabels:
+      app: sonarqube
+      release: sonar
+  template:
+    metadata:
+      annotations:
+        checksum/config: d506210a371d47bf4b7d21659b5a776ca5656cf53844dbd21ae3e07eeba6e490
+        checksum/init-fs: b8c2c3adf7ac760f218cf837d72533bea958882bfab3c62b08dd8962f7946b69
+        checksum/init-sysctl: e7571894ca29ab57669d1cd0db40182557ef6f180cc0bf503d87ddda3a29de1b
+        checksum/plugins: 862f67bb28fb26ed6a557364709a8be3a602a2eb4fad3116b2058ccda0c6dcd1
+        checksum/secret: 2bec848ccdd018b98ded65bb048b808bc8e137f774eef3c7311c9b21d8174e9a
+      labels:
+        app: sonarqube
+        release: sonar
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 0
+      initContainers:
+        - name: init-sysctl
+          image: registry.cn-guangzhou.aliyuncs.com/kansctl/sonarqube:24.12.0.100206-community 
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+            readOnlyRootFilesystem: true
+            runAsUser: 0
+          command: ["/bin/bash", "-e", "/tmp/scripts/init_sysctl.sh"]
+          volumeMounts:
+            - name: init-sysctl
+              mountPath: /tmp/scripts/
+          env:
+            - name: SONAR_WEB_CONTEXT
+              value: /
+            - name: SONAR_WEB_JAVAOPTS
+              value: ""
+            - name: SONAR_CE_JAVAOPTS
+              value: ""
+        - name: init-fs
+          image: registry.cn-guangzhou.aliyuncs.com/kansctl/sonarqube:24.12.0.100206-community
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            capabilities:
+              add:
+              - CHOWN
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 0
+            runAsNonRoot: false
+            runAsUser: 0
+            seccompProfile:
+              type: RuntimeDefault
+          command: ["sh", "-e", "/tmp/scripts/init_fs.sh"]
+          volumeMounts:
+            - name: init-fs
+              mountPath: /tmp/scripts/
+            - mountPath: /opt/sonarqube/data
+              name: sonarqube
+              subPath: data
+            - mountPath: /opt/sonarqube/temp
+              name: sonarqube
+              subPath: temp
+            - mountPath: /opt/sonarqube/logs
+              name: sonarqube
+              subPath: logs
+            - mountPath: /tmp
+              name: tmp-dir
+            - mountPath: /opt/sonarqube/extensions
+              name: sonarqube
+              subPath: extensions
+      containers:
+        - name: sonarqube
+          image: registry.cn-guangzhou.aliyuncs.com/kansctl/sonarqube:24.12.0.100206-community
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 9000
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 800m
+              ephemeral-storage: 512000M
+              memory: 6144M
+            requests:
+              cpu: 400m
+              ephemeral-storage: 1536M
+              memory: 2048M
+          env:
+            - name: SONAR_HELM_CHART_VERSION
+              value: 10.8.1
+            - name: SONAR_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sonar-sonarqube
+                  key: jdbc-password
+            - name: SONAR_WEB_SYSTEMPASSCODE
+              valueFrom:
+                secretKeyRef:
+                  name: sonar-sonarqube-monitoring-passcode
+                  key: SONAR_WEB_SYSTEMPASSCODE
+            - name: SONAR_WEB_CONTEXT
+              value: /
+            - name: SONAR_WEB_JAVAOPTS
+              value: ""
+            - name: SONAR_CE_JAVAOPTS
+              value: ""
+          envFrom:
+            - configMapRef:
+                name: sonar-sonarqube-jdbc-config
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - -c
+              - |
+                wget --no-proxy --quiet -O /dev/null --timeout=1 --header="X-Sonar-Passcode: $SONAR_WEB_SYSTEMPASSCODE" "http://localhost:9000/api/system/liveness"
+            failureThreshold: 6
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 1
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - -c
+              - |
+                #!/bin/bash
+                # A Sonarqube container is considered ready if the status is UP, DB_MIGRATION_NEEDED or DB_MIGRATION_RUNNING
+                # status about migration are added to prevent the node to be kill while SonarQube is upgrading the database.
+                if wget --no-proxy -qO- http://localhost:9000/api/system/status | grep -q -e '"status":"UP"' -e '"status":"DB_MIGRATION_NEEDED"' -e '"status":"DB_MIGRATION_RUNNING"'; then
+                  exit 0
+                fi
+                exit 1
+            failureThreshold: 6
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 1
+          startupProbe:
+            httpGet:
+              scheme: HTTP
+              path: /api/system/status
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 24
+            timeoutSeconds: 1
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            runAsGroup: 0
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /opt/sonarqube/data
+              name: sonarqube
+              subPath: data
+            - mountPath: /opt/sonarqube/temp
+              name: sonarqube
+              subPath: temp
+            - mountPath: /opt/sonarqube/logs
+              name: sonarqube
+              subPath: logs
+            - mountPath: /tmp
+              name: tmp-dir
+            - mountPath: /opt/sonarqube/extensions
+              name: sonarqube
+              subPath: extensions
+      serviceAccountName: sonarqube-sa
+      volumes:
+
+        - name: init-sysctl
+          configMap:
+            name: sonar-sonarqube-init-sysctl
+            items:
+              - key: init_sysctl.sh
+                path: init_sysctl.sh
+        - name: init-fs
+          configMap:
+            name: sonar-sonarqube-init-fs
+            items:
+              - key: init_fs.sh
+                path: init_fs.sh
+        - name: sonarqube
+          persistentVolumeClaim:
+            claimName: sonarqube-data-pvc
+        - name : tmp-dir
+          emptyDir:
+            {}
