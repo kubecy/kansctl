@@ -19,6 +19,13 @@ spec:
         - name: nacos
           image: registry.cn-guangzhou.aliyuncs.com/kansctl/nacos-server:v3.0.3
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
           ports:
             - name: http
               containerPort: 8848   # HTTP OpenAPI / Admin API
