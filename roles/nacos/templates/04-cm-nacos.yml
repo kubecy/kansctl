@@ -22,6 +22,7 @@ data:
 
     spring.datasource.platform=mysql
     db.num=1
-    db.url.0=jdbc:mysql://mysql-svc-headless.moone.svc.cluster.local:3306/nacos_db?characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true
-    db.user=${MYSQL_USER}
-    db.password=${MYSQL_PASSWORD}
+    db.url.0=jdbc:mysql://mysql-svc-headless.moone.svc.cluster.local:3306/nacos_db?characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false
+    db.user.0=${MYSQL_SERVICE_USER}
+    db.password.0=${MYSQL_SERVICE_PASSWORD}
+
