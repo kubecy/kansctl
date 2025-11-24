@@ -1,0 +1,42 @@
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: nacos-headless
+#  namespace: devops
+#spec:
+#  clusterIP: None
+#  selector:
+#    app: nacos
+#  ports:
+#    - name: http
+#      port: 8848
+#      targetPort: 8848
+#
+#
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos-headless
+  namespace: devops
+spec:
+  clusterIP: None
+  selector:
+    app: nacos
+  ports:
+  - name: http
+    port: 8848
+    targetPort: 8848
+  - name: grpc
+    port: 9848
+    targetPort: 9848
+  - name: grpc-svr
+    port: 9849
+    targetPort: 9849
+  - name: raft
+    port: 7848
+    targetPort: 7848
+  - name: console
+    port: 8080
+    targetPort: 8080

@@ -1,0 +1,86 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nacos
+  namespace: devops
+spec:
+  serviceName: nacos-headless
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nacos
+  template:
+    metadata:
+      labels:
+        app: nacos
+    spec:
+      containers:
+        - name: nacos
+          image: registry.cn-guangzhou.aliyuncs.com/kansctl/nacos-server:v3.0.3
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8848   # HTTP OpenAPI / Admin API
+            - name: grpc
+              containerPort: 9848   # 客户端 gRPC → 服务端
+            - name: grpc-svr
+              containerPort: 9849   # 服务端 gRPC → 服务端
+            - name: raft
+              containerPort: 7848   # JRaft 内部端口
+            - name: console
+              containerPort: 8080   # 控制台端口
+          env:
+            - name: MODE
+              value: "cluster"
+            - name: NACOS_SERVERS
+              value: "nacos-0.nacos-headless.devops.svc.cluster.local:8848 nacos-1.nacos-headless.devops.svc.cluster.local:8848 nacos-2.nacos-headless.devops.svc.cluster.local:8848"
+            # MYSQL ENV from secret
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: nacos-secret
+                  key: mysql-user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nacos-secret
+                  key: mysql-password
+
+            - name: NACOS_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: nacos-secret 
+                  key: NACOS_AUTH_TOKEN
+            - name: NACOS_AUTH_IDENTITY_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: nacos-secret
+                  key: NACOS_AUTH_IDENTITY_KEY
+            - name: NACOS_AUTH_IDENTITY_VALUE
+              valueFrom:
+                secretKeyRef:
+                  name: nacos-secret
+                  key: NACOS_AUTH_IDENTITY_VALUE
+          volumeMounts:
+            - name: nacos-data
+              mountPath: /home/nacos/data
+            - name: nacos-data
+              mountPath: /home/nacos/logs
+
+            - name: nacos-config
+              mountPath: /home/nacos/conf/application.properties
+              subPath: application.properties
+      volumes:
+        - name: nacos-config
+          configMap:
+            name: nacos-config
+  volumeClaimTemplates:
+    - metadata:
+        name: nacos-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: nacos-storage
+        resources:
+          requests:
+            storage: 4Gi

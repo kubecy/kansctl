@@ -1,0 +1,19 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nacos-ingress
+  namespace: devops
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: nacos.kubecy.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nacos-headless
+                port:
+                  number: 8080

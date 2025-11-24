@@ -3,20 +3,25 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nacos-config
-  namespace: nacos
+  namespace: devops
 data:
   application.properties: |
-    #server.servlet.contextPath=/
-    server.port=8848
+    server.servlet.contextPath=/
+    nacos.server.main.port=8848
     management.endpoints.web.exposure.include=*
     spring.cloud.nacos.config.server-addr=${NACOS_SERVERS}
     nacos.core.auth.enabled=true
+    nacos.core.auth.admin.enabled=true
     nacos.naming.empty-service.auto-clean=true
     nacos.core.auth.console.enabled=true
     nacos.core.auth.system.type=nacos
 
+    nacos.core.auth.server.identity.key=${NACOS_AUTH_IDENTITY_KEY}
+    nacos.core.auth.server.identity.value=${NACOS_AUTH_IDENTITY_VALUE}
+    nacos.core.auth.plugin.nacos.token.secret.key=${NACOS_AUTH_TOKEN}
+
     spring.datasource.platform=mysql
     db.num=1
-    db.url.0=jdbc:mysql://mysql:3306/nacos_db?characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true
+    db.url.0=jdbc:mysql://mysql-svc-headless.moone.svc.cluster.local:3306/nacos_db?characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true
     db.user=${MYSQL_USER}
     db.password=${MYSQL_PASSWORD}
