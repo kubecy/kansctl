@@ -205,9 +205,13 @@ _kansctl_completions()
 
 complete -F _kansctl_completions ./kansctl
 EOF
+  if ! grep -q "kansctl_completion.sh" ~/.bashrc; then
+    echo "source ~/.kansctl_completion.sh" >> ~/.bashrc
+  fi
 
   logger info  "Tab 补全脚本已写入   ~/.kansctl_completion.sh"
-  logger debug "请执行命令立即生效：source ~/.kansctl_completion.sh"
+  logger info  "已写入 ~/.bashrc"
+  #logger debug "请执行命令立即生效：source ~/.kansctl_completion.sh"
   echo " "
   exec bash
 }
