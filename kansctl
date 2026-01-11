@@ -215,7 +215,6 @@ EOF
   exec bash
 }
 
-
 function main() {
     [[ "$#" -gt 0 ]] || usage 
     case "$1" in
