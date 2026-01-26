@@ -1,23 +1,32 @@
-##K8s 附加组件统一清单 
-
+## prometheus 监控系统
+ 
 k8s_host: "moone_prod"
-namespace: "monitoring"
 docker_repo:
   host: "registry.cn-guangzhou.aliyuncs.com"
   image_project: "kansctl"
-  image_name: "elasticsearch"
-  image_version: "v7.17.3"
+  image_name: "redis"
+  image_version: "6.2.18"
+namespace: "moone"
 
-storage:
-  pvc_redis_data: "redis-single-data-pvc"
-  path: 
-
-## 服务镜像
 service:
-  ## 日志采集
-  ### eflk: Elasticsearch + Filebeat + Logstash  + Kibana
-  elasticsearch: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/elasticsearch:v7.17.3"
-  filebeat: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/filebeat:v7.17.3"
-  logstash: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/logstash:v7.17.3"
-  kibana: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/kibana:v7.17.3"
+  prometheus:
+    image: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/prometheus:v2.53.4"
+
+  grafana:
+    image: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/grafana:v11.6.1-debian-12-r1"
+
+  alertmanager:
+    image: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/alertmanager:v0.27.0"
+
+  node_exporter:
+    image: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/node-exporter:v1.9.1"
+
+  prometheus_config_reloader:
+    image: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/prometheus-config-reloader:v0.55.1"
+
+  prometheus_webhook_dingtalk:
+    image: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/prometheus-webhook-dingtalk:v2.1.0"
+
+  kube_state_metrics:
+    image: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/kube-state-metrics:2.16.0-debian-12-r3"
 
