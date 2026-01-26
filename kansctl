@@ -12,11 +12,9 @@
 set -o nounset
 set -o errexit
 
-
 SERVICE_DIR="./roles"
 ENV_DIR="./moone"
 PLAYBOOK_FILE="./playbooks/site.yml"
-
 
 function logger() {
   TIMESTAMP=$(date +'%Y-%m-%d %H:%M:%S')
