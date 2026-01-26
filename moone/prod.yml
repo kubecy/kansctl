@@ -28,7 +28,8 @@ service:
   elasticsearch: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/elasticsearch:v7.17.3"
 
   ## 初始化容器镜像
-  kubecy_shell: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/os-shell:v12-debian-12-r43"
+  kubecy_shell:
+    image: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/os-shell:v12-debian-12-r43"
   bitnami-shell: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/bitnami-shell:v11-debian-11-r118"
  
 
@@ -46,4 +47,6 @@ service:
   rabbitmq: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/rabbitmq:v3.13.7-debian-12-r2"
   
   ## 分布式协调服务
-  zookeeper: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/zookeeper:3.8.5-jre-17-r10"
+  zookeeper: 
+    image: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/zookeeper:3.8.5-jre-17-r10"
+    pv_path: "/mnt/moone"

@@ -25,7 +25,7 @@ spec:
     spec:
       initContainers:
       - name: volume-permissions
-        image: {{ service.kubecy_shell }} 
+        image: {{ service.kubecy_shell.image }} 
         imagePullPolicy: "IfNotPresent"
         command: 
           - /bin/bash
@@ -44,7 +44,7 @@ spec:
 
       containers:
       - name: zookeeper
-        image: {{ service.zookeeper }} 
+        image: {{ service.zookeeper.image }} 
         imagePullPolicy: Always
         securityContext:
           runAsNonRoot: true
