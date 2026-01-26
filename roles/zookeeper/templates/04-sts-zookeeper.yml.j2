@@ -1,0 +1,115 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: moone-zookeeper
+  namespace: moone # {{ namespace }}
+  labels:
+    role: zookeeper
+    app.kubernetes.io/name: zookeeper
+    app.kubernetes.io/version: 3.8.5
+spec:
+  serviceName: zk-headless
+  replicas: 3 
+  selector:
+    matchLabels:
+      role: zookeeper
+      app.kubernetes.io/name: zookeeper
+      app.kubernetes.io/version: 3.8.5
+  template:
+    metadata:
+      labels:
+        role: zookeeper
+        app.kubernetes.io/name: zookeeper
+        app.kubernetes.io/version: 3.8.5
+    spec:
+      initContainers:
+      - name: volume-permissions
+        image: {{ service.kubecy_shell }} 
+        imagePullPolicy: "IfNotPresent"
+        command: 
+          - /bin/bash
+        args:
+          - -ec
+          - |
+            chown -R 1000:1000 /data /datalog
+            chmod -R g+rwx /data /datalog
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - name: zk-data
+          mountPath: /data
+        - name: zk-datalog
+          mountPath: /datalog
+
+      containers:
+      - name: zookeeper
+        image: {{ service.zookeeper }} 
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 1000
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 200m
+            memory: 256Mi
+        ports:
+        - containerPort: 2181
+          name: client
+        - containerPort: 2888
+          name: server
+        - containerPort: 3888
+          name: leader-election
+        - containerPort: 7000
+          name: metrics
+        
+        volumeMounts:
+        - name: zk-data
+          mountPath: /data
+        - name: zk-datalog
+          mountPath: /datalog
+        - name: zk-config
+          mountPath: /conf/zoo.cfg
+          subPath: zoo.cfg
+        readinessProbe:
+          exec:
+            command: ["/healthcheck.sh"]
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          exec:
+            command: ["/healthcheck.sh"]
+          initialDelaySeconds: 120
+          periodSeconds: 60
+          timeoutSeconds: 10
+          failureThreshold: 3
+      volumes:
+      - name: zk-config
+        configMap:
+          name: zk-config
+          items:
+          - key: zoo.cfg
+            path: zoo.cfg
+  volumeClaimTemplates:
+  - metadata:
+      name: zk-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: "zookeeper-storage"
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: zk-datalog
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: "zookeeper-storage"
+      resources:
+        requests:
+          storage: 5Gi

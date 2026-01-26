@@ -1,0 +1,4 @@
+---
+- name: 删除 zookeeper 实例
+  shell: kubectl delete -f /etc/kansctl/yaml/zookeeper
+  ignore_errors: yes

@@ -1,0 +1,210 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: moone-zookeeper-pv-data-0
+  namespace: moone #{{ namespace  }}
+  labels:
+    app/component: zookeeper
+    app/zookeeper-role: zookeeper
+  annotations:
+    app/component: zookeeper
+    app/zookeeper-role: zookeeper
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: zookeeper-storage 
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/moone/zookeeper/moone-zookeeper-pv-data-0
+    type: DirectoryOrCreate
+  claimRef:
+    kind: PersistentVolumeClaim
+    namespace: moone
+    name: zk-data-moone-zookeeper-0
+    apiVersion: v1
+
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname    ## 根据节点
+              operator: In
+              values: ["moone-worker31"]
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: moone-zookeeper-pv-data-1
+  namespace: moone #{{ namespace  }}
+  labels:
+    app/component: zookeeper
+    app/zookeeper-role: zookeeper
+  annotations:
+    app/component: zookeeper
+    app/zookeeper-role: zookeeper
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: zookeeper-storage 
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/moone/zookeeper/moone-zookeeper-pv-data-1
+    type: DirectoryOrCreate
+  claimRef:
+    kind: PersistentVolumeClaim
+    namespace: moone
+    name: zk-data-moone-zookeeper-1
+    apiVersion: v1
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values: ["moone-worker32"]
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: moone-zookeeper-pv-data-2
+  namespace: moone #{{ namespace  }}
+  labels:
+    app/component: zookeeper
+    app/zookeeper-role: zookeeper
+  annotations:
+    app/component: zookeeper
+    app/zookeeper-role: zookeeper
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: zookeeper-storage 
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/moone/zookeeper/moone-zookeeper-pv-data-2
+    type: DirectoryOrCreate
+  claimRef:
+    kind: PersistentVolumeClaim
+    namespace: moone
+    name: zk-data-moone-zookeeper-2
+    apiVersion: v1
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values: ["moone-worker33"]
+
+
+
+#### zk-datalog
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: moone-zookeeper-pv-datalog-0
+  namespace: moone #{{ namespace  }}
+  labels:
+    app/component: zookeeper
+    app/zookeeper-role: zookeeper
+  annotations:
+    app/component: zookeeper
+    app/zookeeper-role: zookeeper
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: zookeeper-storage
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/moone/zookeeper/moone-zookeeper-pv-datalog-0
+    type: DirectoryOrCreate
+  claimRef:
+    kind: PersistentVolumeClaim
+    namespace: moone
+    name: zk-datalog-moone-zookeeper-0
+    apiVersion: v1
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname    ## 根据节点
+              operator: In
+              values: ["moone-worker31"]
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: moone-zookeeper-pv-datalog-1
+  namespace: moone #{{ namespace  }}
+  labels:
+    app/component: zookeeper
+    app/zookeeper-role: zookeeper
+  annotations:
+    app/component: zookeeper
+    app/zookeeper-role: zookeeper
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: zookeeper-storage
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/moone/zookeeper/moone-zookeeper-pv-datalog-1
+    type: DirectoryOrCreate
+  claimRef:
+    kind: PersistentVolumeClaim
+    namespace: moone
+    name: zk-datalog-moone-zookeeper-1
+    apiVersion: v1
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname    ## 根据节点
+              operator: In
+              values: ["moone-worker32"]
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: moone-zookeeper-pv-datalog-2
+  namespace: moone #{{ namespace  }}
+  labels:
+    app/component: zookeeper
+    app/zookeeper-role: zookeeper
+  annotations:
+    app/component: zookeeper
+    app/zookeeper-role: zookeeper
+spec:
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  storageClassName: zookeeper-storage
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/moone/zookeeper/moone-zookeeper-pv-datalog-2
+    type: DirectoryOrCreate
+  claimRef:
+    kind: PersistentVolumeClaim
+    namespace: moone
+    name: zk-datalog-moone-zookeeper-2
+    apiVersion: v1
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname    ## 根据节点
+              operator: In
+              values: ["moone-worker33"]

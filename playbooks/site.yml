@@ -76,13 +76,18 @@
 
 
 ## 消息队列
-
 - name: apply rabbitmq
   gather_facts: false
   hosts: "{{ k8s_host }}"
   roles:
     - { role: rabbitmq, tags: rabbitmq, when: service.rabbitmq is defined }
 
+## 分布式协调服务
+- name: apply zookeeper
+  gather_facts: false
+  hosts: "{{ k8s_host }}"
+  roles:
+    - { role: zookeeper, tags: zookeeper, when: service.zookeeper is defined }
 
 #- name: apply prometheus-config-reloader 
 #  gather_facts: false

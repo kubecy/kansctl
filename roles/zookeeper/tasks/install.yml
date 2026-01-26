@@ -1,0 +1,19 @@
+---
+- name: 在目标主机创建 /etc/kansctl/yaml/zookeeper 目录
+  file:
+    path: /etc/kansctl/yaml/zookeeper
+    state: directory
+
+- name: 渲染 zookeeper 所需要的资源 YAML 清单
+  template:
+    src: "{{ item }}"
+    dest: "/etc/kansctl/yaml/zookeeper/{{ item | basename | regex_replace('.j2$', '') }}"
+    mode: "0660"
+  loop:
+    - 01-sc-zookeeper.yml.j2
+    - 02-pv-zookeeper.yml.j2
+    - 03-cm-zookeeper.yml.j2
+    - 04-sts-zookeeper.yml.j2
+    - 05-svc-zookeeper.yml.j2
+- name: 部署 zookeeper 实例
+  shell: kubectl apply -f /etc/kansctl/yaml/zookeeper

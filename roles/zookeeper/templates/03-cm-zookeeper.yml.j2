@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zk-config
+  namespace: moone
+data:
+  zoo.cfg: |
+    tickTime=2000
+    initLimit=10
+    syncLimit=5
+    clientPort=2181
+    maxClientCnxns=60
+    dataDir=/data
+    dataLogDir=/datalog
+    autopurge.purgeInterval=24
+    autopurge.snapRetainCount=3
+    minSessionTimeout=4000
+    maxSessionTimeout=40000
+    4lw.commands.whitelist=stat,ruok,conf,isro
+    server.1=moone-zookeeper-0.zk-headless.moone.svc.cluster.local:2888:3888
+    server.2=moone-zookeeper-1.zk-headless.moone.svc.cluster.local:2888:3888
+    server.3=moone-zookeeper-2.zk-headless.moone.svc.cluster.local:2888:3888
