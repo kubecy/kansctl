@@ -1,21 +1,16 @@
 ##K8s 附加组件统一清单 
 
 k8s_host: "moone_prod"
-
+namespace: "monitoring"
 docker_repo:
   host: "registry.cn-guangzhou.aliyuncs.com"
   image_project: "kansctl"
   image_name: "elasticsearch"
   image_version: "v7.17.3"
 
-
-namespace: "addons"
-
-
 storage:
   pvc_redis_data: "redis-single-data-pvc"
   path: 
-
 
 ## 服务镜像
 service:
