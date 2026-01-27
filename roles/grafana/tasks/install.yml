@@ -18,6 +18,7 @@
     - 06-deploy-grafana.yml.j2
     - 07-svc-grafana.yml.j2
     - 08-ingress-grafana.yml.j2
-    - 09-pdb-grafana.yml.j2
+    - 09-gateway-grafana.yml.j2
+    - 10-pdb-grafana.yml.j2
 - name: 部署 grafana 实例
   shell: kubectl apply -f /etc/kansctl/yaml/grafana
