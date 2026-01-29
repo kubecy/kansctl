@@ -18,6 +18,7 @@
     - 06-deploy-prometheus.yml.j2
     - 07-svc-prometheus.yml.j2
     - 08-ingress-prometheus.yml.j2
+    - 09-gateway-prometheus.yml.j2 
 
 - name: 部署 prometheus 实例
   shell: kubectl apply -f /etc/kansctl/yaml/prometheus
