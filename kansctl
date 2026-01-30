@@ -4,7 +4,7 @@
 # AUTHOR:          kubecy                                                                                   #
 # SCRIPT ID:       kansctl                                                                                  #
 # FUNCTION:        kansctl 是一款基于 Ansible、Shell 面向 Kubernetes 场景的中间件部署与项目交付自动化工具   #
-# CREATE TIME:     2023/11/30                                                                               #
+# CREATE TIME:     2024/11/30                                                                               #
 # PLATFORM:        Linux                                                                                    #
 #                                                                                                           #
 #############################################################################################################
