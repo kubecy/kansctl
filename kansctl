@@ -56,10 +56,10 @@ function usage() {
   test                               moone 测试环境
 
 服务 (service):
-  redis-single                       Redis      单实例
-  postgresql-single                  PostgreSQL 单实例
-  mysql-single                       MySQL      单实例
-  rabbitmq-single                    RabbitMQ   单实例
+  redis-single                       redis      单实例
+  postgresql-single                  postgresql 单实例
+  mysql-single                       mysql      单实例
+  rabbitmq-single                    rabbitmq   单实例
 
 示例 (examples):
   ./kansctl list
