@@ -40,7 +40,7 @@ service:
 
 
   ## 监控告警
-  prometheus: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/prometheus:v2.53.4"
+  prometheus: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/prometheus:v3.9.1"
   grafana: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/grafana:v11.6.1-debian-12-r1"
   alertmanager: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/alertmanager:v0.27.0"
   node_exporter: "{{ docker_repo.host }}/{{ docker_repo.image_project }}/node-exporter:v1.9.1"
