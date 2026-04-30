@@ -34,7 +34,7 @@ spec:
             - name: TZ
               value: "Asia/Shanghai"
             - name: JENKINS_UC
-              value: "https://mirrors.huaweicloud.com/jenkins"
+              value: "https://mirrors.huaweicloud.com/jenkins/updates/update-center.json"
             - name: JENKINS_UC_DOWNLOAD
               value: "https://mirrors.huaweicloud.com/jenkins"
             - name: JAVA_OPTS
